@@ -18,4 +18,9 @@ class Company extends Model
     {
         return $this->hasMany(Address::class);
     }
+
+    public function hasPermission($permission)
+    {
+        return Permission::check('company', $this->id, $permission);
+    }
 }

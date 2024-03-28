@@ -17,18 +17,18 @@ class PageController extends Controller
     /**
      * Finds which page to display on the home page
      */
-    public function home(): View
-    {
-        if (Auth::check()) {
-            return view('dashboard');
-        }
-
-        return view('auth.login');
-    }
-
-    // public function home()
+    // public function home(): View
     // {
-    //     $get = User::find(1)->apartment;
-    //     return $get;
+    //     if (Auth::check()) {
+    //         return view('dashboard');
+    //     }
+
+    //     return view('auth.login');
     // }
+
+    public function home()
+    {
+        $get = Auth::user()->hasPermission('add');
+        return $get;
+    }
 }

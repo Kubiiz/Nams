@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Apartment::class, 'owner');
     }
+
+    public function hasPermission($permission)
+    {
+        return Permission::check('user', $this->id, $permission);
+    }
 }

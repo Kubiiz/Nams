@@ -14,6 +14,8 @@ class Permission extends Model
         'type', 'id', 'permission',
     ];
 
+    public $timestamps = false;
+
     // Check if user or company has permission to do something
     public static function check($type, $id, $permission)
     {

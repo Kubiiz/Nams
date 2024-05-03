@@ -37,6 +37,11 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+                        @if(Auth::user()->hasPermission('panel'))
+                            <x-dropdown-link :href="route('panel.index')">
+                                {{ __('Control panel') }}
+                            </x-dropdown-link>
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

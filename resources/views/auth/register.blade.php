@@ -9,8 +9,15 @@
 
         <div class="mt-4">
             <x-input-label for="surname" :value="__('Surname')" />
-            <x-text-input id="surname" class="block mt-1 w-full" type="text" name="surname" :value="old('vname')" required autofocus autocomplete="surname" />
+            <x-text-input id="surname" class="block mt-1 w-full" type="text" name="surname" :value="old('surname')" required autofocus autocomplete="surname" />
             <x-input-error :messages="$errors->get('surname')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('Phone number ')" />
+            <small>{!! __('Example: (+371) <b>23456789</b>') !!}</small>
+            <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone')" placeholder="+371" autofocus autocomplete="phone" />
+            <x-input-error :messages="$errors->get('phone')" />
         </div>
 
         <div class="mt-4">

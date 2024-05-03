@@ -88,6 +88,11 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+                @if(Auth::user()->hasPermission('panel'))
+                    <x-responsive-nav-link :href="route('panel.index')">
+                         {{ __('Control panel') }}
+                    </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

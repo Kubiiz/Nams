@@ -1,4 +1,4 @@
-@section('title', 'Dashboard')
+@section('title', __('Dashboard'))
 
 <x-app-layout>
     <x-slot name="header">

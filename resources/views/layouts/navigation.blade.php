@@ -15,6 +15,31 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user()->hasPermission('bills'))
+                        <x-nav-link :href="route('bills')" :active="request()->routeIs('bills')">
+                            {{ __('Bills') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user()->hasPermission('counters'))
+                        <x-nav-link :href="route('counters')" :active="request()->routeIs('counters')">
+                            {{ __('Counters') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user()->hasPermission('addresess'))
+                        <x-nav-link :href="route('addresses')" :active="request()->routeIs('addresess')">
+                            {{ __('Addresess') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user()->hasPermission('notices'))
+                        <x-nav-link :href="route('notices')" :active="request()->routeIs('notices')">
+                            {{ __('Notices') }}
+                        </x-nav-link>
+                    @endif
+                    @if(Auth::user()->hasPermission('polls'))
+                        <x-nav-link :href="route('polls')" :active="request()->routeIs('polls')">
+                            {{ __('Polls') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -75,6 +100,31 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->hasPermission('bills'))
+                <x-responsive-nav-link :href="route('bills')" :active="request()->routeIs('bills')">
+                    {{ __('Bills') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->hasPermission('counters'))
+                <x-responsive-nav-link :href="route('counters')" :active="request()->routeIs('counters')">
+                    {{ __('Counters') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->hasPermission('addresess'))
+                <x-responsive-nav-link :href="route('addresses')" :active="request()->routeIs('addresess')">
+                    {{ __('Addresess') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->hasPermission('notices'))
+                <x-responsive-nav-link :href="route('notices')" :active="request()->routeIs('notices')">
+                    {{ __('Notices') }}
+                </x-responsive-nav-link>
+            @endif
+            @if(Auth::user()->hasPermission('polls'))
+                <x-responsive-nav-link :href="route('polls')" :active="request()->routeIs('polls')">
+                    {{ __('Polls') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

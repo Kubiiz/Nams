@@ -52,8 +52,8 @@
         </div>
 
         <div>
-            <x-input-label for="phone" :value="__('Phone number ')" />
-            <small>{!! __('Example: (+371) <b>23456789</b>') !!}</small>
+            <x-input-label for="phone" :value="__('Phone number')" />
+            <small>{{ __('Example') }} {!! __(': (+371) <b>23456789</b>') !!}</small>
             <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $user->phone)" placeholder="+371" autofocus autocomplete="phone" />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
@@ -66,8 +66,8 @@
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="text-sm text-green-600"
                 >{{ __('Saved.') }}</p>
             @endif
         </div>

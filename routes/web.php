@@ -29,4 +29,12 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('/lang/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'lv'])) {
+        session(['language' => $locale]);
+    }
+
+    return back();
+})->name('language');;
+
 require __DIR__.'/auth.php';

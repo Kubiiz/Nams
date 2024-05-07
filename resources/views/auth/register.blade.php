@@ -14,8 +14,8 @@
         </div>
 
         <div class="mt-4">
-            <x-input-label for="phone" :value="__('Phone number ')" />
-            <small>{!! __('Example: (+371) <b>23456789</b>') !!}</small>
+            <x-input-label for="phone" :value="__('Phone number')" />
+            <small>{{ __('Example') }} {!! __(': (+371) <b>23456789</b>') !!}</small>
             <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone')" placeholder="+371" autofocus autocomplete="phone" />
             <x-input-error :messages="$errors->get('phone')" />
         </div>
@@ -49,7 +49,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+                {{ __('Already registered') }}
             </a>
 
             <x-primary-button class="ms-4">

@@ -3,7 +3,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Profile') }}
+            {{ __('Edit profile') }}
         </h2>
     </x-slot>
 
@@ -20,12 +20,15 @@
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
-
+            <?php
+            /*
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+            */
+            ?>
         </div>
     </div>
 </x-app-layout>

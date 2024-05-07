@@ -15,20 +15,20 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+        <div class="flex flex-col min-h-screen">
+            <main class="flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 flex-grow">
+                <div>
+                    <x-application-logo class="w-32 fill-current" />
+                </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-            <div class="flex mt-5">
-                <x-nav-lang :href="route('language', 'lv')" :active="app()->isLocale('lv')">lv</x-nav-lang>
-                <x-nav-lang :href="route('language', 'en')" :active="app()->isLocale('en')">en</x-nav-lang>
-            </div>
+                <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+                    {{ $slot }}
+                </div>
+                <div class="flex mt-5">
+                    @include('layouts.language')
+                </div>
+            </main>
+            @include('layouts.footer')
         </div>
     </body>
 </html>

@@ -1,13 +1,11 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white fixed w-screen shadow">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+                    <x-application-logo class="block w-14 fill-current" />
                 </div>
 
                 <!-- Navigation Links -->
@@ -25,9 +23,9 @@
                             {{ __('Counters') }}
                         </x-nav-link>
                     @endif
-                    @if(Auth::user()->hasPermission('addresess'))
-                        <x-nav-link :href="route('addresses')" :active="request()->routeIs('addresess')">
-                            {{ __('Addresess') }}
+                    @if(Auth::user()->hasPermission('addresses'))
+                        <x-nav-link :href="route('addresses')" :active="request()->routeIs('addresses')">
+                            {{ __('Addresses') }}
                         </x-nav-link>
                     @endif
                     @if(Auth::user()->hasPermission('notices'))
@@ -45,8 +43,7 @@
             <!-- Settings Dropdown -->
             <div class="flex items-center">
                 <div class="hidden lg:flex mr-5">
-                    <x-nav-lang :href="route('language', 'lv')" :active="app()->isLocale('lv')">{{ 'lv' }}</x-nav-lang>
-                    <x-nav-lang :href="route('language', 'en')" :active="app()->isLocale('en')">{{ 'en' }}</x-nav-lang>
+                    @include('layouts.language')
                 </div>
                 <div class="hidden lg:flex lg:ms-6">
                     <x-dropdown align="right" width="48">
@@ -90,8 +87,7 @@
             <!-- Hamburger -->
             <div class="-me-2 flex items-center lg:hidden">
                 <div class="flex">
-                    <x-nav-lang :href="route('language', 'lv')" :active="app()->isLocale('lv')">lv</x-nav-lang>
-                    <x-nav-lang :href="route('language', 'en')" :active="app()->isLocale('en')">en</x-nav-lang>
+                    @include('layouts.language')
                 </div>
                 <button @click="open = ! open" class="ml-10 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -119,9 +115,9 @@
                     {{ __('Counters') }}
                 </x-responsive-nav-link>
             @endif
-            @if(Auth::user()->hasPermission('addresess'))
-                <x-responsive-nav-link :href="route('addresses')" :active="request()->routeIs('addresess')">
-                    {{ __('Addresess') }}
+            @if(Auth::user()->hasPermission('addresses'))
+                <x-responsive-nav-link :href="route('addresses')" :active="request()->routeIs('addresses')">
+                    {{ __('Addresses') }}
                 </x-responsive-nav-link>
             @endif
             @if(Auth::user()->hasPermission('notices'))

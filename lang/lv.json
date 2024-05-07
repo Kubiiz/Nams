@@ -12,7 +12,7 @@
     "Password"              : "Parole",
     "Confirm Password"      : "Parole x2",
     "Remember me"           : "Atcerēties mani",
-    "Forgot your password?" : "Aizmirsi parol?",
+    "Forgot your password?" : "Aizmirsi paroli?",
     "Already registered"    : "Esmu reģistrējies",
     "Reset password"        : "Atjaunot paroli",
     "Profile Information"   : "Profila informācija",
@@ -20,6 +20,7 @@
     "Forgot your password? Enter your email address and we will email you a password reset link that will allow you to choose a new one."        : "Aizmirsi savu paroli? Ieraksti savu e-pasta adresi un uz Jūsu e-pastu tiks nosūtīta paroles atjaunošanas saite, kur varēsiet izveidot jaunu paroli.",
     "Ensure your account is using a long, random password to stay secure." : "Aizsargājiet savu profilu, izmantojot garu un drošu paroli!",
     "Update your account's profile information and email address." : "Variet atjaunot savu profila informāciju.",
+    "To continue using the website, please confirm your e-mail <b>:email</b>! A confirmation link was sent to your email." : "Lai turpinātu izmantot mājaslapu, lūdzu, apstipriniet savu epastu <b>:email</b>! Apstiprināšanas saite tika nosūtīta Jums uz epastu.",
     "Current password"      : "Pašreizējā parole",
     "New password"          : "Jaunā parole",
     "New password x2"       : "Jaunā parole x2",
@@ -30,7 +31,8 @@
     "Dashboard"             : "Sākumlapa",
     "Bills"                 : "Rēķini",
     "Counters"              : "Skaitītāju rādījumi",
-    "Addresess"             : "Adreses",
+    "Addresses"             : "Adreses",
     "Notices"               : "Paziņojumi",
-    "Polls"                 : "Aptaujas"
+    "Polls"                 : "Aptaujas",
+    "All rights reserved."  : "Visas tiesības aizsargātas."
 }

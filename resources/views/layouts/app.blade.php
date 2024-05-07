@@ -20,15 +20,10 @@
                 </div>
             </header>
             <main class="flex-grow pb-12">
-            @if(!isset(Auth::user()->email_verified_at))
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <x-alert :type="'danger'">
-                        {!! __('To continue using the website, please confirm your e-mail <b>:email</b>! A confirmation link was sent to your email.', ['email' => Auth::user()->email]) !!}
-                    </x-alert>
-                </div>
-            @else
-                {{ $slot }}
-            @endif
+
+            @include('layouts.verification')
+
+            {{ $slot }}
             </main>
 
             @include('layouts.footer')

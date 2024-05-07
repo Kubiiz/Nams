@@ -32,6 +32,10 @@ class Permission extends Model
                             })
                             ->exists();
 
-        return $query;
+        if (Auth::user()->hasVerifiedEmail() && $query) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

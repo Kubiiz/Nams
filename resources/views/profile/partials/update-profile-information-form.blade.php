@@ -28,13 +28,13 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+            @if (!$user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-gray-800">
+                    <p class="text-sm mt-2 text-red-800">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                        <button form="send-verification" class="underline text-sm text-blue-600 hover:text-blue-900">
+                            {{ __('Re-send the verification email.') }}
                         </button>
                     </p>
 
@@ -44,6 +44,10 @@
                         </p>
                     @endif
                 </div>
+            @else
+                <p class="text-sm mt-2 text-green-800">
+                    {{ __('Email address is verified.') }}
+                </p>
             @endif
         </div>
 

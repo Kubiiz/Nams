@@ -1,3 +1,3 @@
 <a href="{{ route('dashboard') }}">
-    <img src="{{ url('images/logo.png') }}" alt="" {{ $attributes }}>
+    <img src="{{ url('images/nams.png') }}" alt="" {{ $attributes }}>
 </a>

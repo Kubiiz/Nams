@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -19,10 +19,6 @@ class PanelController extends Controller
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('panel')) {
-            return back();
-        }
-
         return view('panel.index');
     }
 }

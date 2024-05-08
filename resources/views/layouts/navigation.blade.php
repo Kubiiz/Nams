@@ -13,21 +13,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if(Auth::user()->hasPermission('bills'))
-                        <x-nav-link :href="route('bills')" :active="request()->routeIs('bills')">
-                            {{ __('Bills') }}
-                        </x-nav-link>
-                    @endif
+                    <x-nav-link :href="route('invoices')" :active="request()->routeIs('invoices')">
+                        {{ __('Invoices') }}
+                    </x-nav-link>
                     @if(Auth::user()->hasPermission('counters'))
                         <x-nav-link :href="route('counters')" :active="request()->routeIs('counters')">
                             {{ __('Counters') }}
                         </x-nav-link>
                     @endif
-                    @if(Auth::user()->hasPermission('addresses'))
-                        <x-nav-link :href="route('addresses')" :active="request()->routeIs('addresses')">
-                            {{ __('Addresses') }}
-                        </x-nav-link>
-                    @endif
+                    <x-nav-link :href="route('addresses')" :active="request()->routeIs('addresses')">
+                        {{ __('Addresses') }}
+                    </x-nav-link>
                     @if(Auth::user()->hasPermission('notices'))
                         <x-nav-link :href="route('notices')" :active="request()->routeIs('notices')">
                             {{ __('Notices') }}
@@ -105,21 +101,17 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @if(Auth::user()->hasPermission('bills'))
-                <x-responsive-nav-link :href="route('bills')" :active="request()->routeIs('bills')">
-                    {{ __('Bills') }}
+                <x-responsive-nav-link :href="route('invoices')" :active="request()->routeIs('invoices')">
+                    {{ __('Invoices') }}
                 </x-responsive-nav-link>
-            @endif
             @if(Auth::user()->hasPermission('counters'))
                 <x-responsive-nav-link :href="route('counters')" :active="request()->routeIs('counters')">
                     {{ __('Counters') }}
                 </x-responsive-nav-link>
             @endif
-            @if(Auth::user()->hasPermission('addresses'))
                 <x-responsive-nav-link :href="route('addresses')" :active="request()->routeIs('addresses')">
                     {{ __('Addresses') }}
                 </x-responsive-nav-link>
-            @endif
             @if(Auth::user()->hasPermission('notices'))
                 <x-responsive-nav-link :href="route('notices')" :active="request()->routeIs('notices')">
                     {{ __('Notices') }}

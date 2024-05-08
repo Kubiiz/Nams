@@ -7,5 +7,5 @@ $classes = ($active ?? false)
 @endphp
 
 <a {{ $attributes }}>
-    <img class="{{ $classes }}" src="{{ url('icons/flag-'.$slot.'.png') }}" alt="{{ $slot }}">
+    <img class="{{ $classes }}" src="{{ url('assets/icons/flag-'.$slot.'.png') }}" alt="{{ $slot }}">
 </a>

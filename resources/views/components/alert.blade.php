@@ -19,7 +19,7 @@ if ($type == 'info') {
 }
 @endphp
 
-<div class="{{ $color}} overflow-hidden sm:rounded-lg border">
+<div class="{{ $color}} overflow-hidden sm:rounded-lg border text-sm">
     <div class="{{ $text }} px-6 py-4">
         {{ $slot }}
     </div>

@@ -12,7 +12,7 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="flex flex-col min-h-screen">
-            <main class="flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 flex-grow">
+            <main class="flex flex-col sm:justify-center items-center pt-6 pb-12 sm:pt-0 bg-gray-100 flex-grow">
                 <div>
                     <x-application-logo class="w-40 fill-current" />
                 </div>

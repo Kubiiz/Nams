@@ -7,10 +7,10 @@
                 <div class="ml-2">&copy; <span class="text-blue-500 font-bold">{{ config('app.name') }}</span> {{ date('Y') }}</div>
             </div>
         </div>
-        <div class="flex items-center  flex-col sm:flex-row mr-1">
+        <div class="flex items-center flex-col sm:flex-row mr-1">
             <div class="sm:mr-3">{{ __('Website developed by') }}</div>
             <a target="new" href="https://etr.lv/portfolio">
-                <img src="{{ url('images/kubiiz.png') }}" alt="" class="sm:w-14 w-12 fill-current">
+                <img src="{{ url('assets/images/kubiiz.png') }}" alt="" class="sm:w-14 w-12 fill-current">
             </a>
         </div>
     </div>

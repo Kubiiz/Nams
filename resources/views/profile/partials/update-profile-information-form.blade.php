@@ -28,23 +28,7 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if (!$user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-red-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-blue-600 hover:text-blue-900">
-                            {{ __('Re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @else
+            @if ($user->hasVerifiedEmail())
                 <p class="text-sm mt-2 text-green-800">
                     {{ __('Email address is verified.') }}
                 </p>

@@ -12,17 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-class BillController extends Controller
+class InvoiceController extends Controller
 {
     /**
      * Finds which page to display on the home page
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('bills')) {
-            return back();
-        }
-
-        return view('bills.index');
+        return view('invoices.index');
     }
 }

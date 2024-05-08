@@ -5,8 +5,16 @@
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
+        <x-alert :type="'info'">
+            {!! __('Parolei jābūt vismaz 8 simbolus garai un tai jāsatur vismaz viens:') !!}<br />
+            {!! __('Lielais burts (A - Z)') !!}<br />
+            {!! __('Mazais burts (a - z)') !!}<br />
+            {!! __('Cipars (0 - 9)') !!}<br />
+            {!! __('Simbols vai speciāla rakstzīme ($,#,& u.c.)') !!}
+        </x-alert>
+
         <!-- Email Address -->
-        <div>
+        <div class="mt-5">
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />

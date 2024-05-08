@@ -19,10 +19,6 @@ class AddressController extends Controller
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('addresses')) {
-            return back();
-        }
-
         return view('addresses.index');
     }
 }

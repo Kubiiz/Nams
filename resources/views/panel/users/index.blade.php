@@ -4,27 +4,30 @@
 <x-app-layout>
     <div class="">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg text-gray-900">
-                <div class="p-3">
-                    <table class="table-auto w-full text-sm">
+            <div class="bg-white shadow-sm sm:rounded-lg text-gray-900">
+                <div class="p-3 relative overflow-x-auto">
+                    <table class="w-full text-sm whitespace-nowrap">
                         <thead>
                             <tr class="font-bold border-b">
-                                <td class="py-1 px-2">{{ __('ID') }}</td>
-                                <td class="py-1 px-2">{{ __('Name') }}</td>
-                                <td class="py-1 px-2">{{ __('Surname') }}</td>
-                                <td class="py-1 px-2">{{ __('Email') }}</td>
+                                <td class="p-2 flex items-center">@sortablelink('id', __('ID'))</td>
+                                <td class="p-2">@sortablelink('name', __('Name')) </td>
+                                <td class="p-2">@sortablelink('surname', __('Surname')) </td>
+                                <td class="p-2">@sortablelink('email', __('Email'))</td>
                             </tr>
                         </thead>
                         <tbody>
                     @foreach ($users as $user)
-                    <tr class="border-b">
-                        <td class="py-1 px-2 italic">#{{ $user->id }}</td>
-                        <td class="py-1 px-2">{{ $user->name }}</td>
-                        <td class="py-1 px-2">{{ $user->surname }}</td>
-                        <td class="py-1 px-2"> {{ $user->email }}</td>
-                        <td class="py-1 px-2 float-end">
-                            <a href="{{ route('panel.users.edit', $user->id) }}">Edit</a>
-                            <a href="">Delete</a>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 italic">#{{ $user->id }}</td>
+                        <td class="p-2">{{ $user->name }}</td>
+                        <td class="p-2">{{ $user->surname }}</td>
+                        <td class="p-2"> {{ $user->email }}</td>
+                        <td class="p-2 float-end">
+                            <a href="{{ route('panel.users.edit', $user->id) }}">
+                                <x-label :type="'info'">
+                                    <i class="fa fa-pencil"></i> {{ __('Edit') }}
+                                </x-label>
+                            </a>
                         </td>
                     </tr>
                     @endforeach

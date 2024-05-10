@@ -16,32 +16,37 @@ class Permission extends Model
 
     public $timestamps = false;
 
-    /**Check if user or company has permission to do something
-     *
-     * User permissions:
-     * admin        - can do anything
-     * panel        - access to controlpanel
-     * users        - can manage users
-     * users_perm   - can edit users permissions
-     * companies    - can manage companies
-     * addresses    - can manage addresses
-     * apartments   - can manage apartments
-     * invoices     - can manage invoices
-     * notices      - can manage notices
-     * polls        - can manage polls
-     * settings     - can manage settings
-     * statistics   - can see webpage statistics
-     */
-    public static function check($type, $id, $permission)
+    // List of permissions and titles
+    public static function list()
+    {
+        $list = [
+            'panel'         => 'Access to control panel',
+            'users'         => 'Can manage users',
+            'users_perm'    => 'Can edit user permissions',
+            'companies'     => 'Can manage companies',
+            'addresses'     => 'Can manage addresses',
+            'apartments'    => 'Can manage apartments',
+            'invoices'      => 'Can manage invoices',
+            'notices'       => 'Can manage notices',
+            'polls'         => 'Can manage polls',
+            'settings'      => 'Can manage settings',
+            'statistics'    => 'Can see webpage statistics',
+        ];
+
+        return $list;
+    }
+
+    //Check if user or company has permission to do something
+    public static function check($type, $id, $permission, $user = null)
     {
         $query = Permission::where([
                                 'type' => $type,
                                 'id'=> $id,
                                 'permission' => $permission])
-                            ->orWhere(function ($query) {
+                            ->orWhere(function ($query) use($user) {
                                 $query->where([
                                     'type' => 'user',
-                                    'id' => Auth::user()->id,
+                                    'id' => $user ?? Auth::user()->id,
                                     'permission' => 'admin'
                                 ]);
                             })

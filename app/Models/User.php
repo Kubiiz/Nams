@@ -6,10 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Kyslik\ColumnSortable\Sortable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Sortable;
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +35,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    public $sortable = [
+        'id',
+        'name',
+        'surname',
+        'email',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -52,8 +60,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Apartment::class, 'owner');
     }
 
-    public function hasPermission($permission)
+    public function hasPermission($permission, $user = null)
     {
-        return Permission::check('user', $this->id, $permission);
+        return Permission::check('user', $this->id, $permission, $user);
     }
 }

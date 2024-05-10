@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\CounterController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\PollController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Panel\PanelController;
 use App\Http\Controllers\Panel\UserController as PanelUserController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [PanelUserController::class, 'index'])->name('index');
             Route::get('{user}/edit', [PanelUserController::class, 'edit'])->name('edit');
+            Route::post('{user}/password', [PanelUserController::class, 'password'])->name('password');
             Route::patch('{user}/permissions', [PanelUserController::class, 'permissions'])->name('permissions');
             Route::patch('{user}', [PanelUserController::class, 'update'])->name('update');
         });

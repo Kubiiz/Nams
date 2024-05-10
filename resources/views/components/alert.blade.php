@@ -25,7 +25,7 @@ switch ($type) {
 }
 @endphp
 
-<div class="{{ $color}} overflow-hidden rounded-lg border text-sm shadow-sm">
+<div class="{{ $color}} w-full overflow-hidden rounded-lg border text-sm shadow-sm">
     <div class="{{ $text }} px-6 py-4">
         {{ $slot }}
     </div>

@@ -5,7 +5,26 @@
     <div class="">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg text-gray-900">
-                <div class="p-3 relative overflow-x-auto">
+                <form method="GET" action="{{ route('panel.users.search') }}" class="flex float-right pt-3 pr-3">
+                    @csrf
+                    <div class="mr-1">
+                        <x-text-input id="search" name="search" type="text" class="h-8 w-52" :value="old('search', $search)" placeholder="{{ __('Search') }}" />
+                        <x-input-error class="mt-2" :messages="$errors->get('search')" />
+                    </div>
+                    <x-button :type="'success'">
+                        <i class="fa fa-search text-sm mr-1"></i><span class="mt-px">{{ __('Search') }}</span>
+                    </x-button>
+
+                    @if($search)
+                    <div class="ml-1">
+                        <x-button :type="'danger'" :url="route('panel.users.index')">
+                            <i class="fa fa-times text-sm mr-1"></i><span class="mt-px">{{ __('Clear') }}</span>
+                        </x-button>
+                    </div>
+                    @endif
+                </form>
+                <div class="w-full p-3 relative overflow-x-auto">
+                @if(count($users) > 0)
                     <table class="w-full text-sm whitespace-nowrap">
                         <thead>
                             <tr class="font-bold border-b">
@@ -33,9 +52,14 @@
                     @endforeach
                         </tbody>
                     </table>
+                @else
+                    <x-alert :type="'info'">
+                        {{ __('No record found.') }}
+                    </x-alert>
+                @endif
                 </div>
             </div>
-            {{ $users->onEachSide(1)->links() }}
+            {!! $users->appends(Request::except('page'))->onEachSide(1)->render() !!}
         </div>
     </div>
 </x-app-layout>

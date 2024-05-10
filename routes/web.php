@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [PanelUserController::class, 'index'])->name('index');
             Route::get('{user}/edit', [PanelUserController::class, 'edit'])->name('edit');
+            Route::get('/search', [PanelUserController::class, 'search'])->name('search');
             Route::post('{user}/password', [PanelUserController::class, 'password'])->name('password');
             Route::patch('{user}/permissions', [PanelUserController::class, 'permissions'])->name('permissions');
             Route::patch('{user}', [PanelUserController::class, 'update'])->name('update');

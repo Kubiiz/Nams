@@ -22,7 +22,9 @@
             @endif
         </div>
 
-        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-end">
+            @php
+            /*
             <div>
                 <p class="text-sm text-gray-700 leading-5 dark:text-gray-400">
                     {!! __('Showing') !!}
@@ -38,7 +40,8 @@
                     {!! __('results') !!}
                 </p>
             </div>
-
+            */
+            @endphp
             <div>
                 <span class="relative z-0 inline-flex rtl:flex-row-reverse shadow-sm rounded-md">
                     {{-- Previous Page Link --}}

@@ -24,9 +24,30 @@ class UserController extends Controller
             return back();
         }
 
-        $users = User::sortable()->paginate(5);
+        $search = null;
+        $users = User::sortable()->paginate(10);
 
-        return view('panel.users.index', compact('users'));
+        return view('panel.users.index', compact('users', 'search'));
+    }
+
+    /**
+     * Search users
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'search'      => ['string'],
+        ]);
+
+        $search = $request->input('search');
+        $users = User::whereAny([
+                            'name',
+                            'surname',
+                            'email',
+                        ], 'LIKE', "%$search%")
+                        ->sortable()->paginate(10);
+
+        return view('panel.users.index', compact('users', 'search'));
     }
 
     /**

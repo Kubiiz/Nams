@@ -32,8 +32,11 @@
     "New password x2"       : "Jaunā parole x2",
     "Phone number"          : "Telefona numurs",
     "Example"               : "Piemēram",
+    "Search"                : "Meklēt",
+    "Clear"                 : "Notīrīt",
     "Save"                  : "Saglabāt",
     "Saved."                : "Saglabāts",
+    "Edit"                  : "Labot",
     "Update"                : "Atjaunot",
     "Cancel"                : "Atcelt",
     "Dashboard"             : "Sākumlapa",
@@ -75,5 +78,6 @@
     "Companies"             : "Kompānijas",
     "Apartments"            : "Dzīvokļi",
     "Settings"              : "Iestatījumi",
-    "Statistics"            : "Statistika"
+    "Statistics"            : "Statistika",
+    "No record found."      : "Nav atrasts neviens ieraksts."
 }

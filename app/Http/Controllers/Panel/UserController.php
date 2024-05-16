@@ -20,14 +20,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('users')) {
+        if (!Auth::user()->hasPermission('Admin')) {
             return back();
         }
 
         $search = null;
-        $users = User::sortable()->paginate(10);
+        $result = User::sortable()->paginate(10);
 
-        return view('panel.users.index', compact('users', 'search'));
+        return view('panel.users.index', compact('result', 'search'));
     }
 
     /**
@@ -35,19 +35,23 @@ class UserController extends Controller
      */
     public function search(Request $request)
     {
+        if (!Auth::user()->hasPermission('Admin')) {
+            return back();
+        }
+
         $request->validate([
-            'search'      => ['string'],
+            'search'      => 'required|string',
         ]);
 
         $search = $request->input('search');
-        $users = User::whereAny([
+        $result = User::whereAny([
                             'name',
                             'surname',
                             'email',
                         ], 'LIKE', "%$search%")
                         ->sortable()->paginate(10);
 
-        return view('panel.users.index', compact('users', 'search'));
+        return view('panel.users.index', compact('result', 'search'));
     }
 
     /**
@@ -55,12 +59,12 @@ class UserController extends Controller
      */
     public function edit($user)
     {
-        if (!Auth::user()->hasPermission('users')) {
+        if (!Auth::user()->hasPermission('Admin')) {
             return back();
         }
 
         $user = User::findOrFail($user);
-        $permissions = Permission::list();
+        $permissions = Permission::list('user');
 
         return view('panel.users.edit', compact('user', 'permissions'));
     }
@@ -70,7 +74,7 @@ class UserController extends Controller
      */
     public function update(User $user, Request $request)
     {
-        if (!Auth::user()->hasPermission('users')) {
+        if (!Auth::user()->hasPermission('Admin')) {
             return back();
         }
 
@@ -101,7 +105,7 @@ class UserController extends Controller
      */
     public function password(User $user, Request $request)
     {
-        if (!Auth::user()->hasPermission('users') || $user->id == Auth::user()->id) {
+        if (!Auth::user()->hasPermission('Admin')) {
             return back();
         }
 
@@ -121,7 +125,7 @@ class UserController extends Controller
      */
     public function permissions(User $user, Request $request)
     {
-        if (!Auth::user()->hasPermission('users_perm') || $user->id == Auth::user()->id) {
+        if (!Auth::user()->hasPermission('Admin')) {
             return back();
         }
 
@@ -132,20 +136,7 @@ class UserController extends Controller
                   ->delete();
 
         // Create new permissions if is added new
-        if($request->permission) {
-            foreach ($request->permission as $key => $value) {
-                if (isset(Permission::list()[$value])) {
-                    Permission::where('type', 'user')
-                              ->where('id', $user->id)
-                              ->where('permission', '!=' , 'admin')
-                              ->create([
-                                'type'       => 'user',
-                                'id'         => $user->id,
-                                'permission' => $value,
-                              ]);
-                }
-            }
-        }
+        Permission::create('user', $user->id, $request->permission);
 
         return back()->with('status', 'permissions-updated');
     }

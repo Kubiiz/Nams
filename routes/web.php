@@ -9,6 +9,7 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Panel\PanelController;
 use App\Http\Controllers\Panel\UserController as PanelUserController;
+use App\Http\Controllers\Panel\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('dashboard');
@@ -34,6 +35,16 @@ Route::middleware('auth')->group(function () {
             Route::post('{user}/password', [PanelUserController::class, 'password'])->name('password');
             Route::patch('{user}/permissions', [PanelUserController::class, 'permissions'])->name('permissions');
             Route::patch('{user}', [PanelUserController::class, 'update'])->name('update');
+        });
+
+        Route::prefix('companies')->name('companies.')->group(function () {
+            Route::get('create', [CompanyController::class, 'create'])->name('create');
+            Route::post('create', [CompanyController::class, 'store'])->name('store');
+            Route::get('/', [CompanyController::class, 'index'])->name('index');
+            Route::get('{company}/edit', [CompanyController::class, 'edit'])->name('edit');
+            Route::get('/search', [CompanyController::class, 'search'])->name('search');
+            Route::patch('{company}', [CompanyController::class, 'update'])->name('update');
+            Route::post('{company}/status', [CompanyController::class, 'status'])->name('status');
         });
 
         Route::get('invoices', [PanelInvoiceController::class, 'index'])->name('invoices');

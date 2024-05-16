@@ -1,10 +1,6 @@
-@props(['icon', 'access' => false])
+@props(['icon'])
 
 @php
-    if (!Auth::user()->hasPermission($access)) {
-        return false;
-    }
-
     $prefix = $icon ? "<i class='fa fa-$icon text-lg mr-2'></i>" : '';
 @endphp
 

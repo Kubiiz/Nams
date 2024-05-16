@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use App\Models\Permission;
 
 class Panel
 {
@@ -17,7 +18,7 @@ class Panel
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->hasPermission('panel')) {
+        if ($request->user() && Permission::panel()) {
             return $next($request);
         }
 

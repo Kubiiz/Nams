@@ -7,13 +7,9 @@
             <div class="grid sm:grid-cols-2 grid-flow-row gap-3">
                 @include('panel.users.partials.information-form')
 
-                @if($user->id != Auth::user()->id && !$user->hasPermission('admin', $user->id))
-                    @if(Auth::user()->hasPermission('users_perm'))
-                        @include('panel.users.partials.permissions-form')
-                    @endif
+                @include('panel.users.partials.permissions-form')
 
-                    @include('panel.users.partials.password-form')
-                @endif
+                @include('panel.users.partials.password-form')
             </div>
         </div>
     </div>

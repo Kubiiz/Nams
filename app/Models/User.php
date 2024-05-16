@@ -25,6 +25,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
     ];
 
+    public $sortable = [
+        'id',
+        'name',
+        'surname',
+        'email',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -33,13 +40,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    public $sortable = [
-        'id',
-        'name',
-        'surname',
-        'email',
     ];
 
     /**

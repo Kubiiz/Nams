@@ -1,4 +1,4 @@
-@section('title', __('Bills'))
+@section('title', __('Invoices'))
 
 <x-app-layout>
     <div class="">

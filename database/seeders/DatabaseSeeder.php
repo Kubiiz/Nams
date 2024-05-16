@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         Permission::create([
             'type'          => 'user',
             'id'            => $user->id,
-            'permission'    => 'admin',
+            'permission'    => 'Admin',
         ]);
     }
 }

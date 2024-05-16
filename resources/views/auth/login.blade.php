@@ -40,9 +40,9 @@
                 {{ __('Forgot your password?') }}
             </a>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <x-button :type="'primary'">
+                <i class="fa fa-sign-in text-base mr-1"></i> {{ __('Log in') }}
+            </x-button>
         </div>
     </form>
 </x-guest-layout>

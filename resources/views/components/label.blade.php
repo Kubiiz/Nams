@@ -20,6 +20,6 @@ switch ($type) {
 }
 @endphp
 
-<div class="{{ $color}} overflow-hidden rounded border text-xs shadow-sm py-0.5 px-1.5">
+<div class="{{ $color}} inline-flex items-center justify-center rounded-md border text-xs shadow-sm cursor-pointer py-0.5 px-1.5 text-shadow">
     {{ $slot }}
 </div>

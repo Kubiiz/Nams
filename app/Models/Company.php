@@ -4,14 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Kyslik\ColumnSortable\Sortable;
 
 class Company extends Model
 {
-    use HasFactory;
+    use HasFactory, Sortable;
 
     protected $fillable = [
-        'name', 'owner', 'address', 'invoice_number', 'reg_number', 'bank_name', 'bank_number', 'active',
+        'name', 'owner', 'email', 'address', 'invoice_number', 'reg_number', 'bank_name', 'bank_number', 'active',
+    ];
+
+    public $sortable = [
+        'id',
+        'name',
+        'owner',
+        'email',
+        'address',
+        'active',
     ];
 
     public function addresses()
@@ -21,6 +30,6 @@ class Company extends Model
 
     public function hasPermission($permission)
     {
-        return Permission::check('company', $this->id, $permission);
+        return Permission::check('company', $this->id, $permission, 0);
     }
 }

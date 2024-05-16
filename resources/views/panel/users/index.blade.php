@@ -24,7 +24,7 @@
                     @endif
                 </form>
                 <div class="w-full p-3 relative overflow-x-auto">
-                @if(count($users) > 0)
+                @if(count($result) > 0)
                     <table class="w-full text-sm whitespace-nowrap">
                         <thead>
                             <tr class="font-bold border-b">
@@ -35,7 +35,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($result as $user)
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-2 italic">#{{ $user->id }}</td>
                         <td class="p-2">{{ $user->name }}</td>
@@ -44,7 +44,7 @@
                         <td class="p-2 float-end">
                             <a href="{{ route('panel.users.edit', $user->id) }}">
                                 <x-label :type="'info'">
-                                    <i class="fa fa-pencil"></i> {{ __('Edit') }}
+                                    <i class="fa fa-pencil mr-0.5"></i> {{ __('Edit') }}
                                 </x-label>
                             </a>
                         </td>
@@ -59,7 +59,7 @@
                 @endif
                 </div>
             </div>
-            {!! $users->appends(Request::except('page'))->onEachSide(1)->render() !!}
+            {!! $result->appends(Request::except('page'))->onEachSide(1)->render() !!}
         </div>
     </div>
 </x-app-layout>

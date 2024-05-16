@@ -20,23 +20,14 @@ class Permission extends Model
     public static function list()
     {
         $list = [
-            'panel'         => 'Access to control panel',
-            'users'         => 'Can manage users',
-            'users_perm'    => 'Can edit user permissions',
-            'companies'     => 'Can manage companies',
-            'addresses'     => 'Can manage addresses',
-            'apartments'    => 'Can manage apartments',
-            'invoices'      => 'Can manage invoices',
-            'notices'       => 'Can manage notices',
-            'polls'         => 'Can manage polls',
-            'settings'      => 'Can manage settings',
-            'statistics'    => 'Can see webpage statistics',
+            'Owner'         => 'Company owner - can manage own companies - addresses, apartments, counters, invoices, notices, polls',
+            'Manager'       => 'Company manager - can manage companies specific addresses',
         ];
 
         return $list;
     }
 
-    //Check if user or company has permission to do something
+    // Check if user has permission to do something
     public static function check($type, $id, $permission, $user = null)
     {
         $query = Permission::where([
@@ -47,7 +38,7 @@ class Permission extends Model
                                 $query->where([
                                     'type' => 'user',
                                     'id' => $user ?? Auth::user()->id,
-                                    'permission' => 'admin'
+                                    'permission' => 'Admin'
                                 ]);
                             })
                             ->exists();
@@ -57,5 +48,42 @@ class Permission extends Model
         }
 
         return $query;
+    }
+
+    // Check if user ahs access to controlpanel
+    public static function panel()
+    {
+        $query = Permission::where([
+                                'type' => 'user',
+                                'id'=> Auth::user()->id
+                            ])
+                            ->whereIn('permission', ['Owner', 'Manager', 'Admin'])
+                            ->exists();
+
+        if (!Auth::user()->hasVerifiedEmail() || !$query) {
+            return false;
+        }
+
+        return $query;
+    }
+
+    // Create permission
+    public static function create($type, $id, $permissions)
+    {
+        if (empty($permissions)) {
+            return false;
+        }
+
+        foreach($permissions as $permission) {
+            if (isset(Permission::list($type)[$permission])) {
+                Permission::where('type', $type)
+                        ->where('id', $id)
+                        ->firstOrCreate([
+                            'type'       => $type,
+                            'id'         => $id,
+                            'permission' => $permission,
+                        ]);
+            }
+        }
     }
 }

@@ -42,7 +42,9 @@
     </div>
 
     <div class="flex items-center gap-4">
-        <x-primary-button>{{ __('Update') }}</x-primary-button>
+        <x-button :type="'primary'">
+            <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
+        </x-button>
 
         @if (session('status') === 'information-updated')
             <p
@@ -51,7 +53,7 @@
                 x-transition
                 x-init="setTimeout(() => show = false, 3000)"
                 class="text-sm text-green-600"
-            >{{ __('User information updated') }}</p>
+            >{{ __('Information updated') }}</p>
         @endif
     </div>
 </form>

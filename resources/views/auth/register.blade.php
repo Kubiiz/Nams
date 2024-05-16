@@ -52,13 +52,13 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a class="text-sm" href="{{ route('login') }}">
+            <a class="text-sm mr-6" href="{{ route('login') }}">
                 {{ __('Already registered') }}
             </a>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+            <x-button :type="'primary'">
+                <i class="fa fa-user-plus text-base mr-1"></i> {{ __('Register') }}
+            </x-button>
         </div>
     </form>
 </x-guest-layout>

@@ -13,11 +13,13 @@
         @endforeach
     </div>
     <div class="flex items-center gap-4 pt-4">
-        <x-primary-button>{{ __('Update') }}</x-primary-button>
+        <x-button :type="'primary'">
+            <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
+        </x-button>
 
         @if (session('status') === 'permissions-updated')
             <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)" class="text-sm text-green-600">
-                {{ __('User permissions updated') }}
+                {{ __('Permissions updated') }}
             </p>
         @endif
     </div>

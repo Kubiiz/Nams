@@ -36,7 +36,9 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-button :type="'primary'">
+                <i class="fa fa-check text-base mr-1"></i> {{ __('Save') }}
+            </x-button>
 
             @if (session('status') === 'password-updated')
                 <p

@@ -19,8 +19,8 @@ switch ($type) {
         $text = 'text-green-500';
         break;
     default:
-        $color = 'bg-gray-200 border-gray-200';
-        $text = 'text-gray-500';
+        $color = 'bg-gray-100 border-gray-200';
+        $text = 'text-gray-400';
         break;
 }
 @endphp

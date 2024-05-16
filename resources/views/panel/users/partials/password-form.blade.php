@@ -6,7 +6,9 @@
     </x-alert>
 
     <div class="pt-5">
-        <x-primary-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-password-change')">{{ __('Update') }}</x-primary-button>
+        <x-button :type="'primary'" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-password-change')">
+            <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
+        </x-button>
 
         @if (session('status') === 'password-updated')
             <p
@@ -32,12 +34,11 @@
         </p>
         <div class="mt-6 flex justify-end">
             <x-secondary-button x-on:click="$dispatch('close')">
-                {{ __('Cancel') }}
+                <i class="fa fa-times text-base mr-1"></i> {{ __('Cancel') }}
             </x-secondary-button>
-
-            <x-primary-button class="ms-3">
-                {{ __('Update') }}
-            </x-primary-button>
+            <x-button :type="'primary'" class="ml-1">
+                <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
+            </x-button>
         </div>
     </form>
 </x-modal>

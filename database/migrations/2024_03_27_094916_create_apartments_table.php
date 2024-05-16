@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('owner');
             $table->string('email')->nullable();
             $table->string('address')->nullable();
-            $table->string('invoice_number')->nullable();
             $table->string('reg_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_number')->nullable();

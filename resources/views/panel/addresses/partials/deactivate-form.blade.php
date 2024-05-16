@@ -17,7 +17,7 @@
                 x-transition
                 x-init="setTimeout(() => show = false, 5000)"
                 class="text-sm text-green-600"
-            >{{ __('Company activated') }}</p>
+            >{{ __('Company deactivated.') }}</p>
         @endif
     </div>
 </div>

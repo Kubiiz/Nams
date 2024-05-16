@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 
-class CompanyController extends Controller
+class AddressController extends Controller
 {
     /**
      * Show companies
@@ -44,11 +44,11 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        if (!Auth::user()->hasPermission('Admin')) {
+        if (!Auth::user()->hasPermission('Owner')) {
             return back();
         }
 
-        return view('panel.companies.create');
+        return view('panel.addresses.create');
     }
 
     /**
@@ -56,13 +56,13 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
+        if (!Auth::user()->hasPermission('Owner')) {
             return back();
         }
 
         $request->validate([
             'name'              => 'required|min:3|unique:companies,name',
-            'owner'             => 'required|email|exists:users,email',
+            'owner'             => 'required|email|exists:user,email',
         ]);
 
         $company = Company::create($request->all());
@@ -153,6 +153,7 @@ class CompanyController extends Controller
             'name'              => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
             'email'             => 'required|email|string|lowercase',
             'address'           => 'required|min:3',
+            'invoice_number'    => 'required|min:3',
             'reg_number'        => 'required|min:3',
             'bank_name'         => 'required|min:3',
             'bank_number'       => 'required|min:3',
@@ -160,7 +161,7 @@ class CompanyController extends Controller
 
         if (Auth::user()->hasPermission('Admin')) {
             $request->validate([
-                'owner'             => 'required|email|string|lowercase|exists:users,email',
+                'owner'             => 'required|email|string|lowercase|exists:user,email',
             ]);
 
             $req = $request->all();

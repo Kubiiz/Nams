@@ -11,7 +11,7 @@ class Company extends Model
     use HasFactory, Sortable;
 
     protected $fillable = [
-        'name', 'owner', 'email', 'address', 'invoice_number', 'reg_number', 'bank_name', 'bank_number', 'active',
+        'name', 'owner', 'email', 'address', 'reg_number', 'bank_name', 'bank_number', 'active',
     ];
 
     public $sortable = [

@@ -42,7 +42,7 @@ class NewCompany extends Notification
                     ->subject(__('New service - :name', ['name' => $this->result->name]))
                     ->greeting(__('Hello, :name :surname!', ['name' => $this->owner->name, 'surname' => $this->owner->surname]))
                     ->line(new HtmlString(__('You received this email, because we created a new service for your company (<strong>:company</strong>) in our website.', ['company' => $this->result->name])))
-                    ->action(__('Go to control panel'), route('panel.companies.edit', $this->result->id))
+                    ->action(__('Go to control panel'), route('panel.index', $this->result->id))
                     ->line(__('Thanks for using our services!'));
     }
 

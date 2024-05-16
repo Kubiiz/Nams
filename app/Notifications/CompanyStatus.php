@@ -38,22 +38,20 @@ class CompanyStatus extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $active = $this->result->active == 1 ? __('activated') : __('deactivated');
+        $text = __('You received this email, because we <strong>:active</strong> your company (<strong>:company</strong>) in our website.', ['company' => $this->result->name, 'active' => $active]);
+
         $mail = (new MailMessage)
-            ->subject(__('Company status - :name', ['name' => $this->result->name]))
-            ->greeting(__('Hello, :name :surname!', ['name' => $this->owner->name, 'surname' => $this->owner->surname]));
+            ->greeting(__('Hello, :name :surname!', ['name' => $this->owner->name, 'surname' => $this->owner->surname]))
+            ->subject(__('Service :active', ['active' => $active]))
+            ->line(new HtmlString($text));
 
         if ($this->result->active == 1) {
-            $text = __('You received this email, because we <strong>activated</strong> your company (<strong>:company</strong>) in our website.', ['company' => $this->result->name]);
-
             $mail = $mail
-            ->line(new HtmlString($text))
-            ->action(__('Go to control panel'), route('panel.companies.edit', $this->result->id))
+            ->action(__('Go to control panel'), route('panel.index'))
             ->line(__('Thanks for using our services!'));
         } else {
-            $text = __('You received this email, because we <strong>deactivated</strong> your company (<strong>:company</strong>) in our website.', ['company' => $this->result->name]);
-
             $mail = $mail
-            ->line(new HtmlString($text))
             ->line(__('Thanks for using our services!'))
             ->line(__('If you want to use our services again, please write an email and you will be welcome back!'));
         }

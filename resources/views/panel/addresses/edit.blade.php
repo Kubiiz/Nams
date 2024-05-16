@@ -1,5 +1,5 @@
 @section('title', __('Control panel'))
-@section('back', __('Companies Management'))
+@section('back', __('User Management'))
 
 <x-app-layout>
     <div class="">

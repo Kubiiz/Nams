@@ -26,9 +26,15 @@ class PageController extends Controller
         return view('auth.login');
     }
 
-    // public function home()
-    // {
-    //     $get = Auth::user()->hasPermission('add');
-    //     return $get;
-    // }
+    /**
+     * Set language
+     */
+    public function language($locale)
+    {
+        if (in_array($locale, ['en', 'lv'])) {
+            session(['language' => $locale]);
+        }
+
+        return back();
+    }
 }

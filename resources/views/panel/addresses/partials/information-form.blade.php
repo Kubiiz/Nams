@@ -8,15 +8,13 @@
         <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $result->name)" required />
         <x-input-error class="mt-2" :messages="$errors->get('name')" />
     </div>
-    <div>
-        <x-input-label for="owner" :value="__('Owner Email')" />
-        @if ($admin)
+    @if ($admin)
+        <div>
+            <x-input-label for="owner" :value="__('Owner Email')" />
             <x-text-input id="owner" name="owner" type="email" class="mt-1 block w-full" :value="old('owner', $result->owner)" required />
             <x-input-error class="mt-2" :messages="$errors->get('owner')" />
-        @else
-            <small>{{ $result->owner }}</small>
-        @endif
-    </div>
+        </div>
+    @endif
     <div>
         <x-input-label for="email" :value="__('Email')" />
         <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $result->email)" required />
@@ -26,6 +24,11 @@
         <x-input-label for="address" :value="__('Address')" />
         <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address', $result->address)" required />
         <x-input-error class="mt-2" :messages="$errors->get('address')" />
+    </div>
+    <div>
+        <x-input-label for="invoice_number" :value="__('Invoice number')" />
+        <x-text-input id="invoice_number" name="invoice_number" type="text" class="mt-1 block w-full" :value="old('invoice_number', $result->invoice_number)" required />
+        <x-input-error class="mt-2" :messages="$errors->get('invoice_number')" />
     </div>
     <div>
         <x-input-label for="reg_number" :value="__('Registration number')" />

@@ -43,7 +43,7 @@
                                 <td class="p-2">@sortablelink('email', __('Email')) </td>
                                 <td class="p-2">@sortablelink('address', __('Address')) </td>
                                 @if ($perm)
-                                <td class="p-2">@sortablelink('active', __('Status')) </td>
+                                <td class="p-2">@sortablelink('active', __('Active')) </td>
                                 @endif
                             </tr>
                         </thead>

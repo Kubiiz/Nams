@@ -7,6 +7,8 @@
             <div class="grid sm:grid-cols-2 grid-flow-row gap-3">
                 @include('panel.addresses.partials.information-form')
 
+                @include('panel.addresses.partials.options')
+
                 @if($perm)
                     @include('panel.addresses.partials.delete-form')
                 @endif

@@ -17,32 +17,32 @@ class AddressController extends Controller
     /**
      * Show addresses
      */
-    // public function index()
-    // {
-    //     $search = null;
-    //     $count = [];
-    //     $perm = Auth::user()->hasPermission('Owner') ?? false;
+    public function index()
+    {
+        $search = null;
+        $count = [];
+        $perm = Auth::user()->hasPermission('Owner') ?? false;
 
-    //     $result = Address::sortable();
-    //     $companies = Company::where('active', 1);
+        $result = Address::sortable();
+        $companies = Company::where('active', 1);
 
-    //     if (Auth::user()->hasPermission('Admin')) {
-    //         $companies = $companies->get();
-    //     } else {
-    //         if ($perm) {
-    //             $companies = $companies->where('owner', Auth::user()->email);
-    //             $result = $result->whereIn('company_id', $companies->select('id'));
-    //             $companies = $companies->get();
-    //         } else {
-    //             $companies = null;
-    //             $result = $result->where('managers', Auth::user()->email);
-    //         }
-    //     }
+        if (Auth::user()->hasPermission('Admin')) {
+            $companies = $companies->get();
+        } else {
+            if ($perm) {
+                $companies = $companies->where('owner', Auth::user()->email);
+                $result = $result->whereIn('company_id', $companies->select('id'));
+                $companies = $companies->with('addresses')->select(['id', 'name', 'count'])->get();
+            } else {
+                $companies = null;
+                $result = $result->where('managers', Auth::user()->email);
+            }
+        }
 
-    //     $result = $result->paginate(10);
+        $result = $result->paginate(10);
 
-    //     return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
-    // }
+        return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
+    }
 
     /**
      * Create addresses
@@ -101,25 +101,25 @@ class AddressController extends Controller
         ]);
 
         $search = $request->input('search');
-
-        if (!$perm) {
-            return back();
-        }
-
         $count = [];
 
-        if (Auth::user()->hasPermission('Admin')) {
-            $companies = Company::where('active', 1)->get();
-            $result = Address::where('address','LIKE', "%$search%")->sortable()->paginate(10);
-        } else {
-            $companies = Company::with('addresses')->where('owner', Auth::user()->email)->where('active', 1)->get();
-            $companiesIds = Company::select('id')->where('owner', Auth::user()->email)->where('active', 1);
+        $result = Address::where('address','LIKE', "%$search%")->sortable();
+        $companies = Company::where('active', 1);
 
-            $result = Address::whereIn('company_id', $companiesIds)
-                             ->where('address','LIKE', "%$search%")
-                             ->sortable()
-                             ->paginate(10);
+        if (Auth::user()->hasPermission('Admin')) {
+            $companies = $companies->get();
+        } else {
+            if ($perm) {
+                $companies = $companies->where('owner', Auth::user()->email);
+                $result = $result->whereIn('company_id', $companies->select('id'));
+                $companies = $companies->with('addresses')->select(['id', 'name', 'count'])->get();
+            } else {
+                $companies = null;
+                $result = $result->where('managers', Auth::user()->email);
+            }
         }
+
+        $result = $result->paginate(10);
 
         return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
     }

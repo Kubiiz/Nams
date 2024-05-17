@@ -25,7 +25,7 @@
         <table class="w-full text-sm whitespace-nowrap">
             <thead>
                 <tr class="font-bold border-b">
-                    <td class="p-2">@sortablelink('name', __('Company Name'))</td>
+                    <td class="p-2">{{ __('Company Name') }}</td>
                     <td class="p-2">@sortablelink('address', __('Address'))</td>
                     <td class="p-2">&nbsp;</td>
                 </tr>
@@ -38,7 +38,7 @@
             <td class="p-2 float-end">
                 <a href="{{ route('panel.addresses.edit', $address->id) }}">
                     <x-label :type="'info'">
-                        <i class="fa fa-pencil mr-0.5"></i> {{ __('Edit') }}
+                        <i class="fa fa-eye mr-0.5"></i> {{ __('View') }}
                     </x-label>
                 </a>
             </td>

@@ -1,18 +1,14 @@
 @section('title', __('Control panel'))
-@section('back', __('User Management'))
+@section('back', __('Address Management'))
 
 <x-app-layout>
     <div class="">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-6">
-            <div class="grid sm:grid-cols-2 grid-flow-row gap-3 {{ !$admin ? 'bg-white' : '' }}">
-                @include('panel.companies.partials.information-form')
+            <div class="grid sm:grid-cols-2 grid-flow-row gap-3">
+                @include('panel.addresses.partials.information-form')
 
-                @if($admin)
-                    @if ($result->active == 1)
-                        @include('panel.companies.partials.deactivate-form')
-                    @else
-                        @include('panel.companies.partials.activate-form')
-                    @endif
+                @if($perm)
+                    @include('panel.addresses.partials.delete-form')
                 @endif
             </div>
         </div>

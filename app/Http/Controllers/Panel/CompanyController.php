@@ -152,20 +152,21 @@ class CompanyController extends Controller
         $request->validate([
             'name'              => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
             'email'             => 'required|email|string|lowercase',
-            'address'           => 'required|min:3',
-            'reg_number'        => 'required|min:3',
-            'bank_name'         => 'required|min:3',
-            'bank_number'       => 'required|min:3',
+            'address'           => 'required',
+            'reg_number'        => 'required',
+            'bank_name'         => 'required',
+            'bank_number'       => 'required',
         ]);
 
         if (Auth::user()->hasPermission('Admin')) {
             $request->validate([
                 'owner'             => 'required|email|string|lowercase|exists:users,email',
+                'count'             => 'required|numeric|min:1',
             ]);
 
             $req = $request->all();
         } else {
-            $req = $request->except(['owner', 'active']);
+            $req = $request->except(['owner', 'count', 'active']);
         }
 
         $company->update($req);

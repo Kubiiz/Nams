@@ -42,7 +42,13 @@
         <x-text-input id="bank_number" name="bank_number" type="text" class="mt-1 block w-full" :value="old('bank_number', $result->bank_number)" required />
         <x-input-error class="mt-2" :messages="$errors->get('bank_number')" />
     </div>
-
+    @if ($admin)
+    <div>
+        <x-input-label for="count" :value="__('How many addresses can create')" />
+        <x-text-input id="count" name="count" type="number" class="mt-1 block w-full" :value="old('count', $result->count)" required />
+        <x-input-error class="mt-2" :messages="$errors->get('count')" />
+    </div>
+    @endif
     <div class="flex items-center gap-4">
         <x-button :type="'primary'">
             <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}

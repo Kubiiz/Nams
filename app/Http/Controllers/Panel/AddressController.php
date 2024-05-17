@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Permission;
-use App\Notifications\NewCompany;
-use App\Notifications\CompanyStatus;
+use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -16,31 +15,37 @@ use Illuminate\Validation\Rule;
 class AddressController extends Controller
 {
     /**
-     * Show companies
+     * Show addresses
      */
-    public function index()
-    {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
+    // public function index()
+    // {
+    //     $search = null;
+    //     $count = [];
+    //     $perm = Auth::user()->hasPermission('Owner') ?? false;
 
-        $search = null;
-        $perm = Auth::user()->hasPermission('Admin') ?? false;
+    //     $result = Address::sortable();
+    //     $companies = Company::where('active', 1);
 
-        if ($perm) {
-            $result = Company::sortable()->paginate(10);
-        } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->sortable()
-                             ->paginate(10);
-        }
+    //     if (Auth::user()->hasPermission('Admin')) {
+    //         $companies = $companies->get();
+    //     } else {
+    //         if ($perm) {
+    //             $companies = $companies->where('owner', Auth::user()->email);
+    //             $result = $result->whereIn('company_id', $companies->select('id'));
+    //             $companies = $companies->get();
+    //         } else {
+    //             $companies = null;
+    //             $result = $result->where('managers', Auth::user()->email);
+    //         }
+    //     }
 
-        return view('panel.companies.index', compact('result', 'search', 'perm'));
-    }
+    //     $result = $result->paginate(10);
+
+    //     return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
+    // }
 
     /**
-     * Create company
+     * Create addresses
      */
     public function create()
     {
@@ -52,7 +57,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Store company
+     * Store addresses
      */
     public function store(Request $request)
     {
@@ -61,137 +66,132 @@ class AddressController extends Controller
         }
 
         $request->validate([
-            'name'              => 'required|min:3|unique:companies,name',
-            'owner'             => 'required|email|exists:user,email',
+            'company'           => 'required|numeric|exists:companies,id',
+            'address'           => 'required|min:3',
         ]);
 
-        $company = Company::create($request->all());
-        $owner = User::where('email', $company->owner)->first();
+        $company = Company::find($request->company);
 
-        Permission::create('user', $owner->id, ['owner']);
+        if ($company->addresses->count() >= $company->count) {
+            return back()
+                 ->withInput()
+                 ->withErrors(['company' => __('":company" company has reached the limit of :count addresses', ['company' => $company->name, 'count' => $company->count])]);
+        }
 
-        $owner->notify(new NewCompany($company, $owner));
+        if (!Auth::user()->hasPermission('Admin') && $company->owner != Auth::user()->email) {
+            return back()
+                 ->withInput()
+                 ->withErrors(['company' => __('":company" company does not belong to You!', ['company' => $company->name])]);
+        }
 
-        return redirect()->route('panel.companies.edit', $company->id);
+        Address::create($request->merge(['company_id' => $company->id])->toArray());
+
+        return back()->with('status', 'address-created')->withInput();
     }
 
     /**
-     * Search companies
+     * Search addresses
      */
     public function search(Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
+        $perm = Auth::user()->hasPermission('Owner') ?? false;
 
         $request->validate([
             'search'      => 'required|string',
         ]);
 
         $search = $request->input('search');
-        $perm = Auth::user()->hasPermission('Admin') ?? false;
 
-        if ($perm) {
-            $result = Company::whereAny([
-                'name',
-                'owner',
-                'email',
-                'address',
-            ], 'LIKE', "%$search%")
-            ->sortable()->paginate(10);
-        } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->whereAny([
-                                'name',
-                                'owner',
-                                'email',
-                                'address',
-                            ], 'LIKE', "%$search%")
-                            ->sortable()->paginate(10);
-        }
-
-        return view('panel.companies.index', compact('result', 'search', 'perm'));
-    }
-
-    /**
-     * Edit company
-     */
-    public function edit($company)
-    {
-        $admin = Auth::user()->hasPermission('Admin') ?? false;
-
-        $exists = Company::where('owner', Auth::user()->email)
-                         ->where('active', 1)
-                         ->exists();
-
-        if (!Auth::user()->hasPermission('Owner') || !$exists) {
+        if (!$perm) {
             return back();
         }
 
-        if ($admin) {
-            $result = Company::findOrFail($company);
+        $count = [];
+
+        if (Auth::user()->hasPermission('Admin')) {
+            $companies = Company::where('active', 1)->get();
+            $result = Address::where('address','LIKE', "%$search%")->sortable()->paginate(10);
         } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->findOrFail($company);
+            $companies = Company::with('addresses')->where('owner', Auth::user()->email)->where('active', 1)->get();
+            $companiesIds = Company::select('id')->where('owner', Auth::user()->email)->where('active', 1);
+
+            $result = Address::whereIn('company_id', $companiesIds)
+                             ->where('address','LIKE', "%$search%")
+                             ->sortable()
+                             ->paginate(10);
         }
 
-        return view('panel.companies.edit', compact('result', 'admin'));
+        return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
     }
 
     /**
-     * Update company
+     * Edit address
      */
-    public function update(Company $company, Request $request)
+    public function edit(Address $address)
+    {
+        $perm = Auth::user()->hasPermission('Owner') ?? false;
+        $result = $address;
+
+        if (Auth::user()->hasPermission('Owner')) {
+            $exists = Company::where('id', $address->company_id)
+                             ->where('active', 1)
+                             ->exists();
+        } elseif ($perm) {
+            $exists = Company::where('id', $address->company_id)
+                             ->where('owner', Auth::user()->email)
+                             ->where('active', 1)
+                             ->exists();
+        } else {
+            return redirect()->route('panel.addresses.index');
+        }
+
+        if (!$exists) {
+            return back();
+        }
+
+        return view('panel.addresses.edit', compact('result', 'perm'));
+    }
+
+    /**
+     * Update address
+     */
+    public function update(Address $address, Request $request)
     {
         if (!Auth::user()->hasPermission('Owner')) {
             return back();
         }
 
         $request->validate([
-            'name'              => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
-            'email'             => 'required|email|string|lowercase',
             'address'           => 'required|min:3',
-            'invoice_number'    => 'required|min:3',
-            'reg_number'        => 'required|min:3',
-            'bank_name'         => 'required|min:3',
-            'bank_number'       => 'required|min:3',
         ]);
 
-        if (Auth::user()->hasPermission('Admin')) {
-            $request->validate([
-                'owner'             => 'required|email|string|lowercase|exists:user,email',
-            ]);
+        $address->update($request->except(['company_id']));
 
-            $req = $request->all();
-        } else {
-            $req = $request->except(['owner', 'active']);
-        }
-
-        $company->update($req);
-
-        return back()->with('status', 'information-updated');
+        return back()->with('status', 'address-updated');
     }
 
-    /**
-     * Activate/Deactivate company
-     */
-    public function status(Company $company, Request $request)
+    // Delete address
+    public function destroy(Address $address)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
+        $perm = Auth::user()->hasPermission('Owner') ?? false;
+
+        if (Auth::user()->hasPermission('Owner')) {
+            $exists = Company::where('id', $address->company_id)
+                             ->where('owner', Auth::user()->email)
+                             ->where('active', 1)
+                             ->exists();
+        } else if (Auth::user()->hasPermission('Admin')) {
+            $exists = Company::where('id', $address->company_id)
+                             ->where('active', 1)
+                             ->exists();
+        } else {
+            return redirect()->route('panel.addresses.index');
         }
 
-        $status = $company->active == 1 ? null : 1;
+        if ($exists) {
+            $address->delete();
+        }
 
-        $company->update([
-            'active' => $status
-        ]);
-
-        $owner = User::where('email', $company->owner)->first();
-        $owner->notify(new CompanyStatus($company, $owner));
-
-        return back()->with('status', 'company-updated');
+        return redirect()->route('panel.addresses.index');
     }
 }

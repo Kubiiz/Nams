@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('reg_number')->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_number')->nullable();
+            $table->integer('count')->default(1);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->id();
             $table->integer('company_id');
             $table->string('address')->nullable();
+            $table->string('managers')->nullable();
             $table->timestamps();
         });
 

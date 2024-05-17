@@ -23,7 +23,7 @@
                             <i class="fa fa-search text-sm mr-1"></i><span class="mt-px">{{ __('Search') }}</span>
                         </x-button>
 
-                        @if($search)
+                        @if(strlen($search) != 0)
                         <div class="ml-1">
                             <x-button :type="'danger'" :url="route('panel.companies.index')">
                                 <i class="fa fa-times text-sm mr-1"></i><span class="mt-px">{{ __('Clear') }}</span>

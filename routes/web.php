@@ -23,41 +23,44 @@ Route::middleware('auth')->group(function () {
     Route::get('notices', [NoticeController::class, 'index'])->name('notices');
     Route::get('polls', [PollController::class, 'index'])->name('polls');
 
-    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
+        Route::get('/', 'edit')->name('edit');
+        Route::patch('/', 'update')->name('update');
+        Route::delete('/', 'destroy')->name('destroy');
+    });
 
     Route::middleware('panel')->prefix('controlpanel')->name('panel.')->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('index');
 
-        Route::prefix('users')->name('users.')->group(function () {
-            Route::get('/', [PanelUserController::class, 'index'])->name('index');
-            Route::get('{user}/edit', [PanelUserController::class, 'edit'])->name('edit');
-            Route::get('search', [PanelUserController::class, 'search'])->name('search');
-            Route::post('{user}/password', [PanelUserController::class, 'password'])->name('password');
-            Route::patch('{user}/permissions', [PanelUserController::class, 'permissions'])->name('permissions');
-            Route::patch('{user}', [PanelUserController::class, 'update'])->name('update');
+        Route::prefix('users')->name('users.')->controller(PanelUserController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('{user}/edit', 'edit')->name('edit');
+            Route::get('search', 'search')->name('search');
+            Route::post('{user}/password', 'password')->name('password');
+            Route::patch('{user}/permissions', 'permissions')->name('permissions');
+            Route::patch('{user}', 'update')->name('update');
         });
 
-        Route::prefix('companies')->name('companies.')->group(function () {
-            Route::get('/', [CompanyController::class, 'index'])->name('index');
-            Route::get('create', [CompanyController::class, 'create'])->name('create');
-            Route::post('create', [CompanyController::class, 'store'])->name('store');
-            Route::get('search', [CompanyController::class, 'search'])->name('search');
-            Route::get('{company}/edit', [CompanyController::class, 'edit'])->name('edit');
-            Route::patch('{company}', [CompanyController::class, 'update'])->name('update');
-            Route::post('{company}/status', [CompanyController::class, 'status'])->name('status');
+        Route::prefix('companies')->name('companies.')->controller(CompanyController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('create', 'store')->name('store');
+            Route::get('search', 'search')->name('search');
+            Route::get('{company}/edit', 'edit')->name('edit');
+            Route::patch('{company}', 'update')->name('update');
+            Route::post('{company}/status', 'status')->name('status');
         });
 
-        Route::prefix('addresses')->name('addresses.')->group(function () {
-            Route::get('/', [PanelAddressController::class, 'index'])->name('index');
-            Route::get('create', [PanelAddressController::class, 'create'])->name('create');
-            Route::post('create', [PanelAddressController::class, 'store'])->name('store');
-            Route::get('search', [PanelAddressController::class, 'search'])->name('search');
-            Route::get('{address}/edit', [PanelAddressController::class, 'edit'])->name('edit');
-            Route::patch('{address}', [PanelAddressController::class, 'update'])->name('update');
-            Route::delete('{address}', [PanelAddressController::class, 'destroy'])->name('destroy');
-            Route::patch('{address}/managers', [PanelAddressController::class, 'managers'])->name('managers');
+        Route::prefix('addresses')->name('addresses.')->controller(PanelAddressController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('create', 'create')->name('create');
+            Route::post('create', 'store')->name('store');
+            Route::get('search', 'search')->name('search');
+            Route::get('{address}/edit', 'edit')->name('edit');
+            Route::patch('{address}', 'update')->name('update');
+            Route::delete('{address}', 'destroy')->name('destroy');
+            Route::post('{address}/managers', 'managerCreate')->name('manager.create');
+            Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
         });
     });
 });

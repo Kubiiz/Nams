@@ -15,7 +15,7 @@ switch ($type) {
         $color = 'bg-red-400 border-red-500';
         break;
     case 'success':
-        $color = 'bg-green-400 border-green-500';
+        $color = 'bg-green-600 border-green-700';
         break;
     default:
         $color = 'bg-gray-400 border-gray-400';

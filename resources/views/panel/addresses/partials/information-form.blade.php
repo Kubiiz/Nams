@@ -1,4 +1,4 @@
-<div class="p-3 space-y-6 max-w-xl bg-white overflow-hidden shadow-sm sm:rounded-lg">
+<div class="p-3 space-y-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
     <h1 class="text-lg mt-4">{{ __('Address Information') }}</h1>
 
     @if ($perm)
@@ -7,8 +7,20 @@
             @method('patch')
 
             <div>
-                <x-input-label for="owner" :value="__('Company Name')" />
-                <small>{{ $result->company->name }}</small>
+                <x-input-label>
+                    {{ __('Company Name') }}
+
+                    @if ($perm)
+                        <a href="{{ route('panel.companies.edit', $result->company->id) }}">
+                            <x-label :type="'warning'">
+                                <i class="fa fa-pencil mr-1"></i> {{ __('Edit company') }}
+                            </x-label>
+                        </a>
+                    @endif
+                </x-input-label>
+                <small>
+                    {{ $result->company->name }}
+                </small>
             </div>
             <div>
                 <x-input-label for="address" :value="__('Address')" />

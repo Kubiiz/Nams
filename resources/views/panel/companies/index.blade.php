@@ -1,4 +1,5 @@
 @section('title', __('Control panel'))
+@section('titleLink', route('panel.index'))
 @section('back', __('Companies Management'))
 
 <x-app-layout>

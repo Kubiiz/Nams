@@ -1,5 +1,8 @@
 @section('title', __('Control panel'))
-@section('back', __('User Management'))
+@section('titleLink', route('panel.index'))
+@section('back')
+    <a class="text-gray-700" href="{{ route('panel.users.index') }}">{{ __('User Management') }}</a>
+@endsection
 
 <x-app-layout>
     <div class="">

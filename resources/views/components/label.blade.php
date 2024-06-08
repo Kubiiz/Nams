@@ -12,7 +12,7 @@ switch ($type) {
         $color = 'bg-red-400 hover:shadow-inner border-red-500 text-white';
         break;
     case 'success':
-        $color = 'bg-green-400 hover:shadow-inner border-green-500 text-white';
+        $color = 'bg-green-600 hover:shadow-inner border-green-700 text-white';
         break;
     default:
         $color = 'bg-gray-400 hover:shadow-inner border-gray-400 text-white';

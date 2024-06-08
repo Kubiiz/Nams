@@ -1,5 +1,8 @@
-@section('title', __('Control panel'))
-@section('back', __('Adress Management'))
+@section('title')
+    {{ __('Control panel') }}
+@endsection
+@section('titleLink', route('panel.index'))
+@section('back', __('Address Management'))
 
 <x-app-layout>
     <div class="">

@@ -17,17 +17,18 @@
 
             <header class="mt-24 mb-8">
                 <div class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 text-lg text-gray-700 flex justify-between">
-                    <div class="w-3/5">
-                        @yield('title')
+                    <div>
+                        @hasSection('titleLink')
+                            <a class="text-gray-700" href="@yield('titleLink')">@yield('title')</a>
+                        @else
+                            @yield('title')
+                        @endif
+
                         @hasSection('back')
-                        <i class="fa fa-chevron-right text-blue-500 text-base mx-2"></i><span class="text-base">@yield('back')</span>
+                            <i class="fa fa-chevron-right text-blue-500 text-base mx-2"></i>
+                            <span class="text-base">@yield('back')</span>
                         @endif
                     </div>
-                    @hasSection('back')
-                    <a href="{{ url()->previous() }}" class="h-7 px-3 pt-1.5 bg-white border border-gray-200 rounded-md text-sm/[13px] text-gray-500 shadow-sm hover:bg-slate-50 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                        <i class="fa fa-history text-blue-500"></i> {{ __('Back') }}
-                    </a>
-                    @endif
                 </div>
             </header>
             <main class="flex-grow pb-12">

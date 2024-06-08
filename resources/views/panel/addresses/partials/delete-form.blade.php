@@ -1,4 +1,4 @@
-<div class="p-3 max-w-xl bg-white overflow-hidden shadow-sm sm:rounded-lg">
+<div class="p-3 bg-white overflow-hidden shadow-sm sm:rounded-lg">
     <h1 class="text-lg py-4">{{ __('Delete address') }}</h1>
 
     <x-alert :type="'warning'">

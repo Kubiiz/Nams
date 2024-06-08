@@ -50,7 +50,7 @@ class Permission extends Model
         return $query;
     }
 
-    // Check if user ahs access to controlpanel
+    // Check if user has access to controlpanel
     public static function panel()
     {
         $query = Permission::where([
@@ -68,7 +68,7 @@ class Permission extends Model
     }
 
     // Create permission
-    public static function create($type, $id, $permissions)
+    public static function create($type, $id, array $permissions)
     {
         if (empty($permissions)) {
             return false;
@@ -78,12 +78,31 @@ class Permission extends Model
             if (isset(Permission::list($type)[$permission])) {
                 Permission::where('type', $type)
                         ->where('id', $id)
+                        ->whereNot('permission', 'Admin')
                         ->firstOrCreate([
                             'type'       => $type,
                             'id'         => $id,
                             'permission' => $permission,
                         ]);
             }
+        }
+    }
+
+    // Remove permission
+    public static function remove($type, $id, array $permissions)
+    {
+        if (empty($permissions)) {
+            return false;
+        }
+
+        foreach ($permissions as $permission) {
+            Permission::where([
+                    'type' => $type,
+                    'id' => $id,
+                    'permission' => $permission,
+                ])
+                ->whereNot('permission', 'Admin')
+                ->delete();
         }
     }
 }

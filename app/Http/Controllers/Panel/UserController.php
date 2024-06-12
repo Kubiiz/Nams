@@ -11,16 +11,28 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\SearchRequest;
 
 class UserController extends Controller
 {
     /**
      * Show users
      */
-    public function index()
+    public function index(SearchRequest $request = null)
     {
         $search = null;
         $result = User::sortable()->paginate(10);
+
+        if ($request) {
+            $search = $request->input('search');
+
+            $result = User::whereAny([
+                    'name',
+                    'surname',
+                    'email',
+                ], 'LIKE', "%$search%")
+                ->sortable()->paginate(10);
+        }
 
         return view('panel.users.index', compact('result', 'search'));
     }
@@ -28,21 +40,9 @@ class UserController extends Controller
     /**
      * Search users
      */
-    public function search(Request $request)
+    public function search(SearchRequest $request)
     {
-        $request->validate([
-            'search'      => 'required|string',
-        ]);
-
-        $search = $request->input('search');
-        $result = User::whereAny([
-                            'name',
-                            'surname',
-                            'email',
-                        ], 'LIKE', "%$search%")
-                        ->sortable()->paginate(10);
-
-        return view('panel.users.index', compact('result', 'search'));
+        return $this->index($request);
     }
 
     /**

@@ -11,17 +11,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\SearchRequest;
 
 class CompanyController extends Controller
 {
     /**
      * Show companies
      */
-    public function index()
+    public function index(SearchRequest $request = null)
     {
         $search = null;
         $perm = Auth::user()->isAdmin() ?? false;
         $result = Company::query();
+
+        if ($request) {
+            $search = $request->input('search');
+
+            $result = Company::whereAny([
+                'name',
+                'owner',
+                'email',
+                'address',
+            ], 'LIKE', "%$search%");
+        }
 
         if (!$perm) {
             $result = $result->where('owner', Auth::user()->email);
@@ -32,6 +44,14 @@ class CompanyController extends Controller
         $result = $result->sortable()->paginate(10);
 
         return view('panel.companies.index', compact('result', 'search', 'perm'));
+    }
+
+    /**
+     * Search companies
+     */
+    public function search(SearchRequest $request)
+    {
+        return $this->index($request);
     }
 
     /**
@@ -59,51 +79,20 @@ class CompanyController extends Controller
     }
 
     /**
-     * Search companies
-     */
-    public function search(Request $request)
-    {
-        $request->validate([
-            'search'      => 'required|string',
-        ]);
-
-        $search = $request->input('search');
-        $perm = Auth::user()->isAdmin();
-        $result = Company::whereAny([
-                'name',
-                'owner',
-                'email',
-                'address',
-            ], 'LIKE', "%$search%");
-
-        if (!$perm) {
-            $result = $result->where('owner', Auth::user()->email);
-        } else {
-            $result = $result->withTrashed();
-        }
-
-        $result = $result->sortable()->paginate(10);
-
-        return view('panel.companies.index', compact('result', 'search', 'perm'));
-    }
-
-    /**
      * Edit company
      */
     public function edit($company)
     {
         $admin = Auth::user()->isAdmin();
 
-        $exists = Company::where('owner', Auth::user()->email)->exists();
-
-        if (!$admin && !$exists) {
+        if (!Auth::user()->isOwner($company)) {
             return back();
         }
 
         if ($admin) {
             $result = Company::withTrashed()->findOrFail($company);
         } else {
-            $result = Company::where('owner', Auth::user()->email)->findOrFail($company);
+            $result = Company::findOrFail($company);
         }
 
         return view('panel.companies.edit', compact('result', 'admin'));
@@ -114,7 +103,7 @@ class CompanyController extends Controller
      */
     public function update(Company $company, Request $request)
     {
-        if (!Company::where('owner', Auth::user()->email)->exists()) {
+        if (!Auth::user()->isOwner($company->id)) {
             return back();
         }
 

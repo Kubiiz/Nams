@@ -34,8 +34,8 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware('admin')->prefix('users')->name('users.')->controller(PanelUserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('{user}/edit', 'edit')->name('edit');
             Route::get('search', 'search')->name('search');
+            Route::get('{user}/edit', 'edit')->name('edit');
             Route::post('{user}/password', 'password')->name('password');
             Route::patch('{user}/permissions', 'permissions')->name('permissions');
             Route::patch('{user}', 'update')->name('update');
@@ -43,9 +43,9 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware('owner')->prefix('companies')->name('companies.')->controller(CompanyController::class)->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('search', 'search')->name('search');
             Route::get('create', 'create')->name('create')->middleware('admin');
             Route::post('create', 'store')->name('store')->middleware('admin');
-            Route::get('search', 'search')->name('search');
             Route::get('{company}/edit', 'edit')->name('edit');
             Route::patch('{company}', 'update')->name('update');
             Route::post('{company}/status', 'status')->name('status')->middleware('admin');;

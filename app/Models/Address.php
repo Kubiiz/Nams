@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Address extends Model
 {
-    use HasFactory, Sortable;
+    use HasFactory, Sortable, SoftDeletes;
 
     protected $fillable = [
-        'company_id', 'address', 'managers',
+        'company_id', 'address', 'settings', 'managers'
     ];
 
     public $sortable = [

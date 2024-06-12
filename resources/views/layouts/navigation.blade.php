@@ -1,5 +1,5 @@
 @php
-    $panel = App\Models\Permission::panel() ?? false;
+    $panel = Auth::user()->accessToPanel() ?? false;
 @endphp
 <nav x-data="{ open: false }" class="bg-white fixed w-screen shadow z-10">
     <!-- Primary Navigation Menu -->

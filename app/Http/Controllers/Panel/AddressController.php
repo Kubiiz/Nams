@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
-use App\Models\Permission;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,24 +20,18 @@ class AddressController extends Controller
     {
         $search = null;
         $count = [];
-        $perm = Auth::user()->hasPermission('Owner') ?? false;
+        $perm = Auth::user()->isOwner();
 
-        $result = Address::sortable();
-        $companies = Company::where('active', 1);
+        $result = Address::with('company')->sortable();
+        $companies = Company::with('addresses')->select(['id', 'name', 'count']);
 
-        if (Auth::user()->hasPermission('Admin')) {
-            $companies = $companies->get();
-        } else {
+        if (!Auth::user()->isAdmin()) {
             $email = Auth::user()->email;
 
-            if ($perm) {
-                $companies = $companies->where('owner', Auth::user()->email);
-                $result = $result->whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
-                $companies = $companies->with('addresses')->select(['id', 'name', 'count'])->get();
-            } else {
-                $companies = null;
-                $result = $result->where('managers', 'LIKE', "%$email%");
-            }
+            $companies = $companies->where('owner', $email)->get();
+            $result = $result->whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
+        } else {
+            $companies = $companies->get();
         }
 
         $result = $result->paginate(10);
@@ -51,10 +44,6 @@ class AddressController extends Controller
      */
     public function create()
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
-
         return view('panel.addresses.create');
     }
 
@@ -63,10 +52,6 @@ class AddressController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
-
         $request->validate([
             'company'           => 'required|numeric|exists:companies,id',
             'address'           => 'required|min:3',
@@ -80,7 +65,7 @@ class AddressController extends Controller
                  ->withErrors(['company' => __('":company" company has reached the limit of :count addresses', ['company' => $company->name, 'count' => $company->count])]);
         }
 
-        if (!Auth::user()->hasPermission('Admin') && $company->owner != Auth::user()->email) {
+        if (!Auth::user()->isAdmin() && $company->owner != Auth::user()->email) {
             return back()
                  ->withInput()
                  ->withErrors(['company' => __('":company" company does not belong to You!', ['company' => $company->name])]);
@@ -96,7 +81,7 @@ class AddressController extends Controller
      */
     public function search(Request $request)
     {
-        $perm = Auth::user()->hasPermission('Owner') ?? false;
+        $perm = Auth::user()->isOwner();
 
         $request->validate([
             'search'      => 'required|string',
@@ -105,18 +90,15 @@ class AddressController extends Controller
         $search = $request->input('search');
         $count = [];
 
-        $result = Address::where('address','LIKE', "%$search%")->sortable();
-        $companies = Company::where('active', 1);
+        $result = Address::with('company')->where('address','LIKE', "%$search%")->sortable();
+        $companies = Company::with('addresses')->select(['id', 'name', 'count']);
 
-        if (Auth::user()->hasPermission('Admin')) {
-            $companies = $companies->get();
-        } else {
+        if (!Auth::user()->isAdmin()) {
             $email = Auth::user()->email;
 
             if ($perm) {
                 $companies = $companies->where('owner', Auth::user()->email);
                 $result = $result->whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
-                $companies = $companies->with('addresses')->select(['id', 'name', 'count'])->get();
             } else {
                 $companies = null;
                 $result = $result->where('managers', 'LIKE', "%$email%");
@@ -124,6 +106,7 @@ class AddressController extends Controller
         }
 
         $result = $result->paginate(10);
+        $companies = $companies->get();
 
         return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
     }
@@ -140,10 +123,9 @@ class AddressController extends Controller
         $isManager = in_array($email, $managers);
         $perm = Company::where('id', $address->company_id)
                          ->where('owner', $email)
-                         ->where('active', 1)
                          ->exists();
 
-        if (!Auth::user()->hasPermission('Admin') && !$isManager && !$perm) {
+        if (!Auth::user()->isAdmin() && !$isManager && !$perm) {
             return back();
         }
 
@@ -155,7 +137,12 @@ class AddressController extends Controller
      */
     public function update(Address $address, Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
+        $perm = Company::where('id', $address->company_id)
+            ->where('owner', Auth::user()->email)
+            ->where('active', 1)
+            ->exists();
+
+        if (!Auth::user()->isOwner() && !$perm) {
             return back();
         }
 
@@ -171,22 +158,26 @@ class AddressController extends Controller
     // Delete address
     public function destroy(Address $address)
     {
-        if (Auth::user()->hasPermission('Owner')) {
-            $exists = Company::where('id', $address->company_id)
-                             ->where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->exists();
-        } else if (Auth::user()->hasPermission('Admin')) {
-            $exists = Company::where('id', $address->company_id)
-                             ->where('active', 1)
-                             ->exists();
-        } else {
-            return redirect()->route('panel.addresses.index');
+        $perm = Company::where('id', $address->company_id)
+            ->where('owner', Auth::user()->email)
+            ->exists();
+
+        if (!$perm) {
+            return back();
         }
 
-        if ($exists) {
-            $address->delete();
+        // Remove manager(s) permission
+        $managers = explode('|', $address->managers);
+
+        if (count($managers) > 0) {
+            foreach ($managers as $manager) {
+                Permission::remove('company', User::where('email', $manager)->first()->id, ['Manager']);
+            }
         }
+
+        $address->update([
+            'active' => 0,
+        ]);
 
         return redirect()->route('panel.addresses.index');
     }
@@ -196,15 +187,12 @@ class AddressController extends Controller
      */
     public function managerCreate(Address $address, Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
-
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
         $managers = explode('|', $address->managers);
+
 
         if (in_array($request->email, $managers)) {
             return back()
@@ -212,14 +200,15 @@ class AddressController extends Controller
                 ->withErrors(['email' => __('This manager already exists to this address.')]);
         }
 
+        if ($request->email == $address->company->owner) {
+            return back()
+                ->withInput()
+                ->withErrors(['email' => __('Company owner cannot be manager of this address.')]);
+        }
+
         $address->update([
             'managers' => $address->managers ? $address->managers . '|' . $request->email : $request->email,
         ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        // Create new permissions to manager
-        Permission::create('user', $user->id, ['Manager']);
 
         return back()->with('status', 'manager-added');
     }
@@ -227,10 +216,6 @@ class AddressController extends Controller
     // Remove manager from address
     public function managerDestroy(Address $address, Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return redirect()->route('panel.addresses.index');
-        }
-
         $managers = explode('|', $address->managers);
 
         if (!in_array($request->manager, $managers)) {
@@ -238,9 +223,6 @@ class AddressController extends Controller
         }
 
         unset($managers[array_search($request->manager, $managers)]);
-
-        // Remove manager permission
-        Permission::remove('user', User::where('email', $request->manager)->first()->id, ['Manager']);
 
         $managers = implode('|', $managers);
 

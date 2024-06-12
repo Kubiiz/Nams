@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('bank_name')->nullable();
             $table->string('bank_number')->nullable();
             $table->integer('count')->default(1);
-            $table->boolean('active')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->integer('company_id');
             $table->string('address')->nullable();
             $table->string('managers')->nullable();
+            $table->longText('settings')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -47,6 +49,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('associations');
+        Schema::dropIfExists('companies');
+        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('apartments');
     }
 };

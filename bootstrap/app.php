@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\Panel;
+use App\Http\Middleware\Admin;
+use App\Http\Middleware\Owner;
 use App\Http\Middleware\Language;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -14,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'panel' => Panel::class
+            'panel' => Panel::class,
+            'admin' => Admin::class,
+            'owner' => Owner::class,
         ]);
 
         $middleware->appendToGroup('web', [

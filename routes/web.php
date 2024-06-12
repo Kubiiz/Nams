@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('panel')->prefix('controlpanel')->name('panel.')->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('index');
 
-        Route::prefix('users')->name('users.')->controller(PanelUserController::class)->group(function () {
+        Route::middleware('admin')->prefix('users')->name('users.')->controller(PanelUserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('{user}/edit', 'edit')->name('edit');
             Route::get('search', 'search')->name('search');
@@ -41,26 +41,29 @@ Route::middleware('auth')->group(function () {
             Route::patch('{user}', 'update')->name('update');
         });
 
-        Route::prefix('companies')->name('companies.')->controller(CompanyController::class)->group(function () {
+        Route::middleware('owner')->prefix('companies')->name('companies.')->controller(CompanyController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('create', 'create')->name('create');
-            Route::post('create', 'store')->name('store');
+            Route::get('create', 'create')->name('create')->middleware('admin');
+            Route::post('create', 'store')->name('store')->middleware('admin');
             Route::get('search', 'search')->name('search');
             Route::get('{company}/edit', 'edit')->name('edit');
             Route::patch('{company}', 'update')->name('update');
-            Route::post('{company}/status', 'status')->name('status');
+            Route::post('{company}/status', 'status')->name('status')->middleware('admin');;
         });
 
         Route::prefix('addresses')->name('addresses.')->controller(PanelAddressController::class)->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('create', 'create')->name('create');
-            Route::post('create', 'store')->name('store');
             Route::get('search', 'search')->name('search');
             Route::get('{address}/edit', 'edit')->name('edit');
-            Route::patch('{address}', 'update')->name('update');
-            Route::delete('{address}', 'destroy')->name('destroy');
-            Route::post('{address}/managers', 'managerCreate')->name('manager.create');
-            Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
+
+            Route::middleware('owner')->group(function () {
+                Route::get('create', 'create')->name('create');
+                Route::post('create', 'store')->name('store');
+                Route::patch('{address}', 'update')->name('update');
+                Route::delete('{address}', 'destroy')->name('destroy');
+                Route::post('{address}/managers', 'managerCreate')->name('manager.create');
+                Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
+            });
         });
     });
 });

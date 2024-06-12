@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Kyslik\ColumnSortable\Sortable;
+use App\Models\Company;
+use App\Models\Address;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -60,8 +62,51 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Apartment::class, 'owner');
     }
 
-    public function hasPermission($permission, $user = null)
+    public function isAdmin()
     {
-        return Permission::check('user', $this->id, $permission, $user);
+        return $this->where('id', $this->id)->where('access', 1)->exists();
+    }
+
+    public function isOwner($id = null)
+    {
+        $query = Company::where('owner', $this->email);
+
+        if ($id) {
+            $query = $query->where('id', $id);
+        }
+
+        $query = $query->exists();
+
+        if (!$query && !$this->isAdmin()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isManager($id = null)
+    {
+        $query = Address::where('managers', 'LIKE', "%$this->email%");
+
+        if ($id) {
+            $query = $query->where('company_id', $id);
+        }
+
+        $query = $query->exists();
+
+        if (!$query && !$this->isOwner()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function accessToPanel()
+    {
+        if ($this->isAdmin() || $this->isOwner() || $this->isManager()) {
+            return true;
+        }
+
+        return false;
     }
 }

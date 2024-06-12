@@ -50,18 +50,25 @@
     </div>
     @endif
     <div class="flex items-center gap-4">
-        <x-button :type="'primary'">
-            <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
-        </x-button>
+        @if ($result->trashed())
+            <x-alert :type="'warning'">
+                {{ __("This company is deactivated in our system. You cannot edit information.") }}
+            </x-alert>
+        @else
 
-        @if (session('status') === 'information-updated')
-            <p
-                x-data="{ show: true }"
-                x-show="show"
-                x-transition
-                x-init="setTimeout(() => show = false, 3000)"
-                class="text-sm text-green-600"
-            >{{ __('Information updated') }}</p>
+            <x-button :type="'primary'">
+                <i class="fa fa-check text-base mr-1"></i> {{ __('Update') }}
+            </x-button>
+
+            @if (session('status') === 'information-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="text-sm text-green-600"
+                >{{ __('Information updated') }}</p>
+            @endif
         @endif
     </div>
 </form>

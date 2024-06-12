@@ -3,7 +3,7 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 grid-flow-row gap-3">
-            @if (Auth::user()->hasPermission('Admin'))
+            @if (auth()->user()->isAdmin())
                 <x-panel-main-link :href="route('panel.users.index')" :icon="'users'">
                     {{ __('Users') }}
                 </x-panel-main-link>
@@ -12,8 +12,8 @@
                 </x-panel-main-link>
             @endif
 
-            @if (Auth::user()->hasPermission('Manager') || Auth::user()->hasPermission('Owner'))
-                @if (Auth::user()->hasPermission('Owner'))
+            @if (auth()->user()->isManager())
+                @if (auth()->user()->isOwner())
                     <x-panel-main-link :href="route('panel.companies.index')" :icon="'address-card-o'">
                         {{ __('Companies') }}
                     </x-panel-main-link>

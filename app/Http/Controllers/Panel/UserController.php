@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Notifications\NewPassword;
 use App\Models\User;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,10 +19,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $search = null;
         $result = User::sortable()->paginate(10);
 
@@ -35,10 +30,6 @@ class UserController extends Controller
      */
     public function search(Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $request->validate([
             'search'      => 'required|string',
         ]);
@@ -59,12 +50,8 @@ class UserController extends Controller
      */
     public function edit($user)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $user = User::findOrFail($user);
-        $permissions = Permission::list('user');
+        $permissions = [];
 
         return view('panel.users.edit', compact('user', 'permissions'));
     }
@@ -74,10 +61,6 @@ class UserController extends Controller
      */
     public function update(User $user, Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $request->validate([
             'name'      => ['required', 'string', 'min:3', 'max:15'],
             'surname'   => ['required', 'string', 'min:3', 'max:100'],
@@ -103,12 +86,8 @@ class UserController extends Controller
     /**
      * Update user password
      */
-    public function password(User $user, Request $request)
+    public function changePassword(User $user, Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $password = Str::random(10);
 
         $user->update([
@@ -118,26 +97,5 @@ class UserController extends Controller
         $user->notify(new NewPassword($password, $user->name));
 
         return back()->with('status', 'password-updated');
-    }
-
-    /**
-     * Update user permissions
-     */
-    public function permissions(User $user, Request $request)
-    {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
-        // Delete existing permissions
-        Permission::where('type', 'user')
-                  ->where('id', $user->id)
-                  ->where('permission', '!=' , 'admin')
-                  ->delete();
-
-        // Create new permissions if is added new
-        Permission::create('user', $user->id, $request->permission);
-
-        return back()->with('status', 'permissions-updated');
     }
 }

@@ -20,12 +20,7 @@ class DatabaseSeeder extends Seeder
             'name'          => 'User',
             'surname'       => 'Surname',
             'email'         => 'nams@etr.lv',
-        ]);
-
-        Permission::create([
-            'type'          => 'user',
-            'id'            => $user->id,
-            'permission'    => 'Admin',
+            'access'        => true,
         ]);
     }
 }

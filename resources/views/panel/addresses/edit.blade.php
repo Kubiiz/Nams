@@ -11,7 +11,7 @@
                 @include('panel.addresses.partials.information-form')
                 @include('panel.addresses.partials.options')
 
-                @if($perm || Auth::user()->hasPermission('Admin'))
+                @if($perm || Auth::user()->isAdmin())
                     @include('panel.addresses.partials.managers')
                     @include('panel.addresses.partials.delete-form')
                 @endif

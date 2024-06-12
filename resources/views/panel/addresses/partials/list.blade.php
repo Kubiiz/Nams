@@ -33,7 +33,13 @@
             <tbody>
         @foreach ($result as $address)
         <tr class="border-b hover:bg-gray-50">
-            <td class="p-2">{{ $address->company->name }}</td>
+            <td class="p-2">
+                @if ($perm)
+                    <a href="{{ route('panel.companies.edit', $address->company->id) }}">{{ $address->company->name }}</a>
+                @else
+                    {{ $address->company->name }}
+                @endif
+            </td>
             <td class="p-2">{{ $address->address }}</td>
             <td class="p-2 float-end">
                 <a href="{{ route('panel.addresses.edit', $address->id) }}">

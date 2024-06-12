@@ -38,7 +38,7 @@ class CompanyStatus extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $active = $this->result->active == 1 ? __('activated') : __('deactivated');
+        $active = !$this->result->trashed() ? __('activated') : __('deactivated');
         $text = __('You received this email, because we <strong>:active</strong> your company (<strong>:company</strong>) in our website.', ['company' => $this->result->name, 'active' => $active]);
 
         $mail = (new MailMessage)
@@ -46,7 +46,7 @@ class CompanyStatus extends Notification
             ->subject(__('Service :active', ['active' => $active]))
             ->line(new HtmlString($text));
 
-        if ($this->result->active == 1) {
+        if (!$this->result->trashed()) {
             $mail = $mail
             ->action(__('Go to control panel'), route('panel.index'))
             ->line(__('Thanks for using our services!'));

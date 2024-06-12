@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
 {
-    use HasFactory, Sortable;
+    use HasFactory, Sortable, SoftDeletes;
 
     protected $fillable = [
-        'name', 'owner', 'email', 'address', 'reg_number', 'bank_name', 'bank_number', 'count', 'active',
+        'name', 'owner', 'email', 'address', 'reg_number', 'bank_name', 'bank_number', 'count',
     ];
 
     public $sortable = [
@@ -20,7 +21,6 @@ class Company extends Model
         'owner',
         'email',
         'address',
-        'active',
     ];
 
     public function addresses()

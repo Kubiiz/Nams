@@ -11,7 +11,7 @@
                 @include('panel.companies.partials.information-form')
 
                 @if($admin)
-                    @if ($result->active == 1)
+                    @if (!$result->trashed())
                         @include('panel.companies.partials.deactivate-form')
                     @else
                         @include('panel.companies.partials.activate-form')

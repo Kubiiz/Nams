@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
-use App\Models\Permission;
 use App\Notifications\NewCompany;
 use App\Notifications\CompanyStatus;
 use Illuminate\Http\Request;
@@ -20,21 +19,17 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
-
         $search = null;
-        $perm = Auth::user()->hasPermission('Admin') ?? false;
+        $perm = Auth::user()->isAdmin() ?? false;
+        $result = Company::query();
 
-        if ($perm) {
-            $result = Company::sortable()->paginate(10);
+        if (!$perm) {
+            $result = $result->where('owner', Auth::user()->email);
         } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->sortable()
-                             ->paginate(10);
+            $result = $result->withTrashed();
         }
+
+        $result = $result->sortable()->paginate(10);
 
         return view('panel.companies.index', compact('result', 'search', 'perm'));
     }
@@ -44,10 +39,6 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         return view('panel.companies.create');
     }
 
@@ -56,21 +47,13 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
-        }
-
         $request->validate([
             'name'              => 'required|min:3|unique:companies,name',
             'owner'             => 'required|email|exists:users,email',
         ]);
 
         $company = Company::create($request->all());
-        $owner = User::where('email', $company->owner)->first();
-
-        Permission::create('user', $owner->id, ['owner']);
-
-        $owner->notify(new NewCompany($company, $owner));
+        //$owner->notify(new NewCompany($company, $owner));
 
         return redirect()->route('panel.companies.edit', $company->id);
     }
@@ -80,36 +63,26 @@ class CompanyController extends Controller
      */
     public function search(Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
-            return back();
-        }
-
         $request->validate([
             'search'      => 'required|string',
         ]);
 
         $search = $request->input('search');
-        $perm = Auth::user()->hasPermission('Admin') ?? false;
-
-        if ($perm) {
-            $result = Company::whereAny([
+        $perm = Auth::user()->isAdmin();
+        $result = Company::whereAny([
                 'name',
                 'owner',
                 'email',
                 'address',
-            ], 'LIKE', "%$search%")
-            ->sortable()->paginate(10);
+            ], 'LIKE', "%$search%");
+
+        if (!$perm) {
+            $result = $result->where('owner', Auth::user()->email);
         } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->whereAny([
-                                'name',
-                                'owner',
-                                'email',
-                                'address',
-                            ], 'LIKE', "%$search%")
-                            ->sortable()->paginate(10);
+            $result = $result->withTrashed();
         }
+
+        $result = $result->sortable()->paginate(10);
 
         return view('panel.companies.index', compact('result', 'search', 'perm'));
     }
@@ -119,22 +92,18 @@ class CompanyController extends Controller
      */
     public function edit($company)
     {
-        $admin = Auth::user()->hasPermission('Admin') ?? false;
+        $admin = Auth::user()->isAdmin();
 
-        $exists = Company::where('owner', Auth::user()->email)
-                         ->where('active', 1)
-                         ->exists();
+        $exists = Company::where('owner', Auth::user()->email)->exists();
 
-        if (!Auth::user()->hasPermission('Owner') || !$exists) {
+        if (!$admin && !$exists) {
             return back();
         }
 
         if ($admin) {
-            $result = Company::findOrFail($company);
+            $result = Company::withTrashed()->findOrFail($company);
         } else {
-            $result = Company::where('owner', Auth::user()->email)
-                             ->where('active', 1)
-                             ->findOrFail($company);
+            $result = Company::where('owner', Auth::user()->email)->findOrFail($company);
         }
 
         return view('panel.companies.edit', compact('result', 'admin'));
@@ -145,7 +114,7 @@ class CompanyController extends Controller
      */
     public function update(Company $company, Request $request)
     {
-        if (!Auth::user()->hasPermission('Owner')) {
+        if (!Company::where('owner', Auth::user()->email)->exists()) {
             return back();
         }
 
@@ -158,7 +127,7 @@ class CompanyController extends Controller
             'bank_number'       => 'required',
         ]);
 
-        if (Auth::user()->hasPermission('Admin')) {
+        if (Auth::user()->isAdmin()) {
             $request->validate([
                 'owner'             => 'required|email|string|lowercase|exists:users,email',
                 'count'             => 'required|numeric|min:1',
@@ -166,7 +135,7 @@ class CompanyController extends Controller
 
             $req = $request->all();
         } else {
-            $req = $request->except(['owner', 'count', 'active']);
+            $req = $request->except(['owner', 'count']);
         }
 
         $company->update($req);
@@ -177,20 +146,18 @@ class CompanyController extends Controller
     /**
      * Activate/Deactivate company
      */
-    public function status(Company $company, Request $request)
+    public function status($company, Request $request)
     {
-        if (!Auth::user()->hasPermission('Admin')) {
-            return back();
+        $company = Company::withTrashed()->findOrFail($company);
+
+        if ($company->trashed()) {
+            $company->restore();
+        } else {
+            $company->delete();
         }
 
-        $status = $company->active == 1 ? null : 1;
-
-        $company->update([
-            'active' => $status
-        ]);
-
-        $owner = User::where('email', $company->owner)->first();
-        $owner->notify(new CompanyStatus($company, $owner));
+        //$owner = User::where('email', $company->owner)->first();
+        //$owner->notify(new CompanyStatus($company, $owner));
 
         return back()->with('status', 'company-updated');
     }

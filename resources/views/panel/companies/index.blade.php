@@ -39,36 +39,28 @@
                         <thead>
                             <tr class="font-bold border-b">
                                 <td class="p-2 flex items-center">@sortablelink('id', __('ID'))</td>
-                                <td class="p-2">@sortablelink('name', __('Company Name')) </td>
-                                <td class="p-2">@sortablelink('owner', __('Owner Email')) </td>
-                                <td class="p-2">@sortablelink('email', __('Email')) </td>
-                                <td class="p-2">@sortablelink('address', __('Address')) </td>
-                                @if ($perm)
-                                <td class="p-2">@sortablelink('active', __('Status')) </td>
-                                @endif
+                                <td class="p-2">@sortablelink('name', __('Company Name'))</td>
+                                <td class="p-2">@sortablelink('owner', __('Owner Email'))</td>
+                                <td class="p-2">@sortablelink('email', __('Email'))</td>
+                                <td class="p-2">@sortablelink('address', __('Address'))</td>
                             </tr>
                         </thead>
                         <tbody>
                     @foreach ($result as $company)
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-2 italic">#{{ $company->id }}</td>
-                        <td class="p-2">{{ $company->name }}</td>
-                        <td class="p-2">{{ $company->owner }}</td>
-                        <td class="p-2">{{ $company->email }}</td>
-                        <td class="p-2">{{ $company->address }}</td>
-                        @if ($perm)
                         <td class="p-2">
-                            @if ($company->active == 1)
-                                <x-label :type="'success'">
-                                    {{ __('Active') }}
-                                </x-label>
-                            @else
+                            {{ $company->name }}
+
+                            @if ($perm && $company->trashed() == 1)
                                 <x-label :type="'warning'">
                                     {{ __('Deactivated') }}
                                 </x-label>
                             @endif
                         </td>
-                        @endif
+                        <td class="p-2">{{ $company->owner }}</td>
+                        <td class="p-2">{{ $company->email }}</td>
+                        <td class="p-2">{{ $company->address }}</td>
                         <td class="p-2 float-end">
                             <a href="{{ route('panel.companies.edit', $company->id) }}">
                                 <x-label :type="'info'">

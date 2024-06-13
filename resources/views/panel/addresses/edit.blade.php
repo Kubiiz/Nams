@@ -11,9 +11,17 @@
                 @include('panel.addresses.partials.information-form')
                 @include('panel.addresses.partials.options')
 
-                @if($perm || Auth::user()->isAdmin())
+                @if($perm && !$result->trashed())
                     @include('panel.addresses.partials.managers')
-                    @include('panel.addresses.partials.delete-form')
+                    @include('panel.addresses.partials.settings')
+                @endif
+
+                @if ($isAdmin)
+                    @if (!$result->trashed())
+                        @include('panel.addresses.partials.deactivate-form')
+                    @else
+                        @include('panel.addresses.partials.activate-form')
+                    @endif
                 @endif
             </div>
         </div>

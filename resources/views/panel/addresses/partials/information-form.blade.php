@@ -1,7 +1,7 @@
 <div class="p-3 space-y-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
     <h1 class="text-lg mt-4">{{ __('Address Information') }}</h1>
 
-    @if ($perm)
+    @if ($perm && !$result->trashed())
         <form method="post" action="{{ route('panel.addresses.update', $result->id) }}" class="space-y-6">
             @csrf
             @method('patch')

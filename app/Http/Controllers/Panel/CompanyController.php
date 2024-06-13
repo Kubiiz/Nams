@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Address;
+use App\Models\Apartment;
 use App\Models\Company;
 use App\Notifications\NewCompany;
 use App\Notifications\CompanyStatus;
@@ -68,8 +69,8 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'              => 'required|min:3|unique:companies,name',
-            'owner'             => 'required|email|exists:users,email',
+            'name' => 'required|min:3|unique:companies,name',
+            'owner' => 'required|email|exists:users,email',
         ]);
 
         $company = Company::create($request->all());
@@ -108,18 +109,18 @@ class CompanyController extends Controller
         }
 
         $request->validate([
-            'name'              => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
-            'email'             => 'required|email|string|lowercase',
-            'address'           => 'required',
-            'reg_number'        => 'required',
-            'bank_name'         => 'required',
-            'bank_number'       => 'required',
+            'name' => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
+            'email' => 'required|email|string|lowercase',
+            'address' => 'required',
+            'reg_number' => 'required',
+            'bank_name' => 'required',
+            'bank_number' => 'required',
         ]);
 
         if (Auth::user()->isAdmin()) {
             $request->validate([
-                'owner'             => 'required|email|string|lowercase|exists:users,email',
-                'count'             => 'required|numeric|min:1',
+                'owner' => 'required|email|string|lowercase|exists:users,email',
+                'count' => 'required|numeric|min:1',
             ]);
 
             $req = $request->all();
@@ -135,14 +136,20 @@ class CompanyController extends Controller
     /**
      * Activate/Deactivate company
      */
-    public function status($company, Request $request)
+    public function status($company)
     {
         $company = Company::withTrashed()->findOrFail($company);
+        $address = Address::withTrashed()->where('company_id', $company->id);
+        $apartment = Apartment::whereIn('address_id', $address->pluck('id'));
 
         if ($company->trashed()) {
             $company->restore();
+            $address->restore();
+            $apartment->restore();
         } else {
             $company->delete();
+            $address->delete();
+            $apartment->delete();
         }
 
         //$owner = User::where('email', $company->owner)->first();

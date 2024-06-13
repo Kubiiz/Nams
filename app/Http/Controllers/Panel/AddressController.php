@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Apartment;
 use App\Models\Company;
 use App\Models\Address;
 use Illuminate\Http\Request;
@@ -39,6 +39,7 @@ class AddressController extends Controller
             $result = $result->whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
         } else {
             $companies = $companies->get();
+            $result = $result->withTrashed();
         }
 
         $result = $result->paginate(10);
@@ -86,7 +87,16 @@ class AddressController extends Controller
                  ->withErrors(['company' => __('":company" company does not belong to You!', ['company' => $company->name])]);
         }
 
-        Address::create($request->merge(['company_id' => $company->id])->toArray());
+        $settings = [
+            'counter'       => null,
+            'counter_from'  => null,
+            'counter_to'    => null,
+        ];
+
+        Address::create($request->merge([
+            'company_id' => $company->id,
+            'settings' => json_encode($settings)
+            ])->toArray());
 
         return back()->with('status', 'address-created')->withInput();
     }
@@ -94,19 +104,27 @@ class AddressController extends Controller
     /**
      * Edit address
      */
-    public function edit(Address $address)
+    public function edit($address)
     {
-        $result = $address;
+        $isAdmin = Auth::user()->isAdmin();
+
+        if ($isAdmin) {
+            $result = Address::with('company')->withTrashed()->findOrFail($address);
+        } else {
+            $result = Address::with('company')->findOrFail($address);
+        }
+
         $managers = $result->managers ? explode('|', $result->managers) : [];
 
         $isManager = in_array(Auth::user()->email, $managers);
-        $perm = Auth::user()->isOwner($result->id);
+        $perm = Auth::user()->isOwner($result->company_id);
+        $settings = json_decode($result->settings, true);
 
-        if (!Auth::user()->isAdmin() && !$isManager && !$perm) {
-            return back();
+        if (!$isAdmin && !$isManager && !$perm) {
+           return back();
         }
 
-        return view('panel.addresses.edit', compact('result', 'perm', 'managers'));
+        return view('panel.addresses.edit', compact('result', 'perm', 'isAdmin', 'managers', 'settings'));
     }
 
     /**
@@ -127,18 +145,45 @@ class AddressController extends Controller
         return back()->with('status', 'address-updated');
     }
 
-    // Delete address
-    public function destroy(Address $address)
+    // Delete/Restore address
+    public function status($address)
     {
-        if (!Auth::user()->isOwner($address->company_id)) {
-            return back();
+        $address = Address::withTrashed()->findOrFail($address);
+        $apartment = Apartment::where('address_id', $address->id);
+
+        if ($address->trashed()) {
+            $address->restore();
+            $apartment->restore();
+        } else {
+            $address->delete();
+            $apartment->delete();
         }
 
-        $address->update([
-            'active' => 0,
+        return back()->with('status', 'address-status');
+    }
+
+    /**
+     * Update settings
+     */
+    public function settings(Address $address, Request $request)
+    {
+        $request->validate([
+            'counter'       => 'required|in:number,number_photo,random,without',
+            'counter_from'  => 'required|numeric|min:1|max:31',
+            'counter_to'    => 'required|numeric|min:1|max:31',
         ]);
 
-        return redirect()->route('panel.addresses.index');
+        $settings = [
+            'counter'       => $request->counter,
+            'counter_from'  => $request->counter_from,
+            'counter_to'    => $request->counter_to,
+        ];
+
+        $address->update([
+            'settings' => json_encode($settings),
+        ]);
+
+        return back()->with('status', 'settings-updated');
     }
 
     /**

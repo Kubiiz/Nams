@@ -36,6 +36,12 @@
             <td class="p-2">
                 @if ($perm)
                     <a href="{{ route('panel.companies.edit', $address->company->id) }}">{{ $address->company->name }}</a>
+
+                    @if ($address->trashed() == 1)
+                        <x-label :type="'warning'">
+                            {{ __('Deactivated') }}
+                        </x-label>
+                    @endif
                 @else
                     {{ $address->company->name }}
                 @endif

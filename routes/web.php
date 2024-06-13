@@ -55,12 +55,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('search', 'search')->name('search');
             Route::get('{address}/edit', 'edit')->name('edit');
+            Route::post('{address}/status', 'status')->name('status')->middleware('admin');
 
             Route::middleware('owner')->group(function () {
                 Route::get('create', 'create')->name('create');
                 Route::post('create', 'store')->name('store');
                 Route::patch('{address}', 'update')->name('update');
-                Route::delete('{address}', 'destroy')->name('destroy');
+                Route::patch('{address}/settings', 'settings')->name('settings');
                 Route::post('{address}/managers', 'managerCreate')->name('manager.create');
                 Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
             });

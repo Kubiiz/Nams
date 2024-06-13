@@ -26,7 +26,7 @@
             @if (count($count) > 0)
             <x-input-label for="company" :value="__('Company Name')" />
             <x-select-input id="company" name="company" class="mt-1 block w-full">
-                <x-select-option selected disabled>{{ __('Choose company') }}</x-select-option>
+                <x-select-option :selected="'selected'" disabled>{{ __('Choose company') }}</x-select-option>
 
                 @foreach ($companies as $company)
                     @if ($company->addresses->count() < $company->count)
@@ -34,7 +34,7 @@
                             $selected = old('company') == $company->id ? 'selected' : '';
                         @endphp
 
-                        <x-select-option value="{{ $company->id }}" selected="{{ $selected }}">{{ $company->name }}</x-select-option>
+                        <x-select-option value="{{ $company->id }}" :selected="$selected">{{ $company->name }}</x-select-option>
                     @endif
                 @endforeach
 

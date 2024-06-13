@@ -1,4 +1,5 @@
 <form method="post" action="{{ route('panel.companies.update', $result->id) }}" class="p-3 space-y-6 max-w-xl bg-white overflow-hidden shadow-sm sm:rounded-lg">
+    <input type="hidden" name="id" value="{{ $result->id }}">
     @csrf
     @method('patch')
 

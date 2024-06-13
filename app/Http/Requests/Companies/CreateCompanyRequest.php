@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Companies;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class SearchRequest extends FormRequest
+class CreateCompanyRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,8 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['required', 'string'],
+            'name' => ['required', 'min:3', 'unique:companies,name'],
+            'owner' => ['required', 'email', 'exists:users,email'],
         ];
     }
 }

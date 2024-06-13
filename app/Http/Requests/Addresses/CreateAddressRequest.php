@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Addresses;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Rules\CreateAddressRule;
 
-class SearchRequest extends FormRequest
+class CreateAddressRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +16,8 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['required', 'string'],
+            'company' => ['required', 'numeric', 'exists:companies,id', new CreateAddressRule($this->company)],
+            'address' => ['required', 'min:3'],
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Apartment;
 use App\Models\Company;
 use App\Models\Address;
@@ -11,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\SearchRequest;
+use App\Http\Requests\Addresses\CreateAddressRequest;
+use App\Http\Requests\Addresses\UpdateAddressRequest;
+use App\Http\Requests\Addresses\CreateManagerRequest;
+use App\Http\Requests\Addresses\UpdateSettingsRequest;
 
 class AddressController extends Controller
 {
@@ -66,27 +71,8 @@ class AddressController extends Controller
     /**
      * Store addresses
      */
-    public function store(Request $request)
+    public function store(CreateAddressRequest $request)
     {
-        $request->validate([
-            'company'           => 'required|numeric|exists:companies,id',
-            'address'           => 'required|min:3',
-        ]);
-
-        $company = Company::find($request->company);
-
-        if ($company->addresses->count() >= $company->count) {
-            return back()
-                 ->withInput()
-                 ->withErrors(['company' => __('":company" company has reached the limit of :count addresses', ['company' => $company->name, 'count' => $company->count])]);
-        }
-
-        if (!Auth::user()->isAdmin() && $company->owner != Auth::user()->email) {
-            return back()
-                 ->withInput()
-                 ->withErrors(['company' => __('":company" company does not belong to You!', ['company' => $company->name])]);
-        }
-
         $settings = [
             'counter'       => null,
             'counter_from'  => null,
@@ -94,7 +80,7 @@ class AddressController extends Controller
         ];
 
         Address::create($request->merge([
-            'company_id' => $company->id,
+            'company_id' => $request->company,
             'settings' => json_encode($settings)
             ])->toArray());
 
@@ -107,6 +93,8 @@ class AddressController extends Controller
     public function edit($address)
     {
         $isAdmin = Auth::user()->isAdmin();
+        $managers = [];
+        $managerList = [];
 
         if ($isAdmin) {
             $result = Address::with('company')->withTrashed()->findOrFail($address);
@@ -114,9 +102,12 @@ class AddressController extends Controller
             $result = Address::with('company')->findOrFail($address);
         }
 
-        $managers = $result->managers ? explode('|', $result->managers) : [];
+        if ($result->managers) {
+            $managerList = explode('|', $result->managers);
+            $managers = User::whereIn('email', $managerList)->get();
+        }
 
-        $isManager = in_array(Auth::user()->email, $managers);
+        $isManager = in_array(Auth::user()->email, $managerList);
         $perm = Auth::user()->isOwner($result->company_id);
         $settings = json_decode($result->settings, true);
 
@@ -130,15 +121,11 @@ class AddressController extends Controller
     /**
      * Update address
      */
-    public function update(Address $address, Request $request)
+    public function update(Address $address, UpdateAddressRequest $request)
     {
         if (!Auth::user()->isOwner($address->company_id)) {
             return back();
         }
-
-        $request->validate([
-            'address'           => 'required|min:3',
-        ]);
 
         $address->update($request->except(['company_id']));
 
@@ -165,14 +152,8 @@ class AddressController extends Controller
     /**
      * Update settings
      */
-    public function settings(Address $address, Request $request)
+    public function settings(Address $address, UpdateSettingsRequest $request)
     {
-        $request->validate([
-            'counter'       => 'required|in:number,number_photo,random,without',
-            'counter_from'  => 'required|numeric|min:1|max:31',
-            'counter_to'    => 'required|numeric|min:1|max:31',
-        ]);
-
         $settings = [
             'counter'       => $request->counter,
             'counter_from'  => $request->counter_from,
@@ -189,27 +170,8 @@ class AddressController extends Controller
     /**
      * Add manager to address
      */
-    public function managerCreate(Address $address, Request $request)
+    public function managerCreate(Address $address, CreateManagerRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
-
-        $managers = explode('|', $address->managers);
-
-
-        if (in_array($request->email, $managers)) {
-            return back()
-                ->withInput()
-                ->withErrors(['email' => __('This manager already exists to this address.')]);
-        }
-
-        if ($request->email == $address->company->owner) {
-            return back()
-                ->withInput()
-                ->withErrors(['email' => __('Company owner cannot be manager of this address.')]);
-        }
-
         $address->update([
             'managers' => $address->managers ? $address->managers . '|' . $request->email : $request->email,
         ]);

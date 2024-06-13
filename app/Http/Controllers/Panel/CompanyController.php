@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\SearchRequest;
+use App\Http\Requests\Companies\UpdateCompanyRequest;
+use App\Http\Requests\Companies\CreateCompanyRequest;
 
 class CompanyController extends Controller
 {
@@ -66,13 +68,8 @@ class CompanyController extends Controller
     /**
      * Store company
      */
-    public function store(Request $request)
+    public function store(CreateCompanyRequest $request)
     {
-        $request->validate([
-            'name' => 'required|min:3|unique:companies,name',
-            'owner' => 'required|email|exists:users,email',
-        ]);
-
         $company = Company::create($request->all());
         //$owner->notify(new NewCompany($company, $owner));
 
@@ -102,33 +99,19 @@ class CompanyController extends Controller
     /**
      * Update company
      */
-    public function update(Company $company, Request $request)
+    public function update(Company $company, UpdateCompanyRequest $request)
     {
         if (!Auth::user()->isOwner($company->id)) {
             return back();
         }
 
-        $request->validate([
-            'name' => ['required', 'min:3', Rule::unique('companies', 'name')->ignore($company->id)],
-            'email' => 'required|email|string|lowercase',
-            'address' => 'required',
-            'reg_number' => 'required',
-            'bank_name' => 'required',
-            'bank_number' => 'required',
-        ]);
-
         if (Auth::user()->isAdmin()) {
-            $request->validate([
-                'owner' => 'required|email|string|lowercase|exists:users,email',
-                'count' => 'required|numeric|min:1',
-            ]);
-
-            $req = $request->all();
+            $update = $request->all();
         } else {
-            $req = $request->except(['owner', 'count']);
+            $update = $request->except(['owner', 'count']);
         }
 
-        $company->update($req);
+        $company->update($update);
 
         return back()->with('status', 'information-updated');
     }

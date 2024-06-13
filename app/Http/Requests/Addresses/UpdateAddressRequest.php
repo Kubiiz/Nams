@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Addresses;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class SearchRequest extends FormRequest
+class UpdateAddressRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,7 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['required', 'string'],
+            'address' => ['required', 'min:3'],
         ];
     }
 }

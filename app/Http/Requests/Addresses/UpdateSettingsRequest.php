@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Addresses;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class SearchRequest extends FormRequest
+class UpdateSettingsRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,9 @@ class SearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['required', 'string'],
+            'counter' => ['required', 'in:number,number_photo,random,without'],
+            'counter_from' => ['required', 'numeric', 'min:1', 'max:31'],
+            'counter_to' => ['required', 'numeric', 'min:1', 'max:31'],
         ];
     }
 }

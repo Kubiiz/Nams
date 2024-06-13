@@ -17,8 +17,8 @@
                 <tbody>
             @foreach ($managers as $manager)
             <tr class="border-b hover:bg-gray-50">
-                <td class="p-2">{{ $manager }}</td>
-                <td class="p-2">{{ $manager }}</td>
+                <td class="p-2">{{ $manager->name }} {{ $manager->surname }}</td>
+                <td class="p-2">{{ $manager->email }}</td>
                 <td class="p-2 float-end">
                     <x-button :type="'warning'" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-delete_{{ $loop->index }}')">
                         <i class="fa fa-times mr-0.5"></i> {{ __('Remove') }}
@@ -27,10 +27,10 @@
                         <form method="post" action="{{ route('panel.addresses.manager.destroy', $result->id) }}" class="p-6">
                             @csrf
                             @method('delete')
-                            <input type="hidden" name="manager" value="{{ $manager }}">
+                            <input type="hidden" name="manager" value="{{ $manager->email }}">
 
                             <h2 class="text-lg font-medium text-gray-900">
-                                {{ __('Are you sure you want to remove ":manager" manager?', ['manager' => $manager]) }}
+                                {{ __('Are you sure you want to remove ":manager" manager?', ['manager' => $manager->name . ' ' . $manager->surname]) }}
                             </h2>
                             <p class="mt-1 text-sm text-gray-600">
                                 {{ __('This manager will be removed from this address.') }}
@@ -71,6 +71,7 @@
         @endif
 
         <form method="post" action="{{ route('panel.addresses.manager.create', $result->id) }}" class="space-y-3">
+            <input type="hidden" name="address" value="{{ $result->company_id }}">
             @csrf
 
             <h2>{{ __('Add manager') }}</h2>

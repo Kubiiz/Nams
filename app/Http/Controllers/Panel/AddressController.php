@@ -26,7 +26,6 @@ class AddressController extends Controller
     {
         $search = null;
         $count = [];
-        $perm = Auth::user()->isOwner();
 
         $result = Address::with('company')->sortable();
         $companies = Company::with('addresses')->select(['id', 'name', 'count']);
@@ -49,7 +48,7 @@ class AddressController extends Controller
 
         $result = $result->paginate(10);
 
-        return view('panel.addresses.index', compact('result', 'companies', 'search', 'perm', 'count'));
+        return view('panel.addresses.index', compact('result', 'companies', 'search', 'count'));
     }
 
     /**
@@ -107,11 +106,10 @@ class AddressController extends Controller
             $managers = User::whereIn('email', $managerList)->get();
         }
 
-        $isManager = in_array(Auth::user()->email, $managerList);
         $perm = Auth::user()->isOwner($result->company_id);
         $settings = json_decode($result->settings, true);
 
-        if (!$isAdmin && !$isManager && !$perm) {
+        if (!$isAdmin && !$perm) {
            return back();
         }
 
@@ -136,14 +134,11 @@ class AddressController extends Controller
     public function status($address)
     {
         $address = Address::withTrashed()->findOrFail($address);
-        $apartment = Apartment::where('address_id', $address->id);
 
         if ($address->trashed()) {
             $address->restore();
-            $apartment->restore();
         } else {
             $address->delete();
-            $apartment->delete();
         }
 
         return back()->with('status', 'address-status');

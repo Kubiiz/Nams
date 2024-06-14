@@ -7,7 +7,7 @@
 
             <h2>{{ __('Counter readings') }}</h2>
             <div>
-                <x-input-label for="counter" :value="__('Counter reading options')" />
+                <x-input-label for="counter" :value="__('Reading options')" />
                 <x-select-input id="counter" name="counter" class="mt-1 block w-full">
                     <x-select-option :selected="'selected'" disabled>{{ __('Choose option') }}</x-select-option>
                     <x-select-option value="number" :selected="old('counter', $settings['counter']) == 'number' ? 'selected' : ''">{{ __('Only counter numbers') }}</x-select-option>
@@ -19,12 +19,12 @@
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <x-input-label for="counter_from" :value="__('Counter reading from')" />
+                    <x-input-label for="counter_from" :value="__('Counter reading from (day)')" />
                     <x-text-input id="invoice_from" name="counter_from" type="number" placeholder="27" class="mt-1 block w-full" :value="old('counter_from', $settings['counter_from'])" />
                     <x-input-error class="mt-2" :messages="$errors->get('counter_from')" />
                 </div>
                 <div>
-                    <x-input-label for="counter_to" :value="__('Counter reading to')" />
+                    <x-input-label for="counter_to" :value="__('Counter reading to (day)')" />
                     <x-text-input id="counter_to" name="counter_to" type="number" placeholder="07" class="mt-1 block w-full" :value="old('counter_to', $settings['counter_to'])" />
                     <x-input-error class="mt-2" :messages="$errors->get('counter_to')" />
                 </div>

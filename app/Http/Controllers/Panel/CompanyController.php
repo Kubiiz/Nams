@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Address;
 use App\Models\Apartment;
 use App\Models\Company;
@@ -70,7 +71,9 @@ class CompanyController extends Controller
      */
     public function store(CreateCompanyRequest $request)
     {
-        $company = Company::create($request->all());
+        $company = Company::create($request->validated());
+
+        //$owner = User::where('email', $company->owner)->first();
         //$owner->notify(new NewCompany($company, $owner));
 
         return redirect()->route('panel.companies.edit', $company->id);
@@ -105,13 +108,7 @@ class CompanyController extends Controller
             return back();
         }
 
-        if (Auth::user()->isAdmin()) {
-            $update = $request->all();
-        } else {
-            $update = $request->except(['owner', 'count']);
-        }
-
-        $company->update($update);
+        $company->update($request->validated());
 
         return back()->with('status', 'information-updated');
     }
@@ -123,16 +120,13 @@ class CompanyController extends Controller
     {
         $company = Company::withTrashed()->findOrFail($company);
         $address = Address::withTrashed()->where('company_id', $company->id);
-        $apartment = Apartment::whereIn('address_id', $address->pluck('id'));
 
         if ($company->trashed()) {
             $company->restore();
             $address->restore();
-            $apartment->restore();
         } else {
             $company->delete();
             $address->delete();
-            $apartment->delete();
         }
 
         //$owner = User::where('email', $company->owner)->first();

@@ -10,6 +10,9 @@
                 <x-panel-main-link :href="route('dashboard')" :icon="'bar-chart'">
                     {{ __('Statistics') }}
                 </x-panel-main-link>
+                <x-panel-main-link :href="route('dashboard')" :icon="'list'">
+                    {{ __('Logs') }}
+                </x-panel-main-link>
             @endif
 
             @if (auth()->user()->isManager())
@@ -17,11 +20,11 @@
                     <x-panel-main-link :href="route('panel.companies.index')" :icon="'address-card-o'">
                         {{ __('Companies') }}
                     </x-panel-main-link>
-                @endif
-
-                <x-panel-main-link :href="route('panel.addresses.index')" :icon="'home'">
+                    <x-panel-main-link :href="route('panel.addresses.index')" :icon="'home'">
                     {{ __('Addresses') }}
                 </x-panel-main-link>
+                @endif
+
                 <x-panel-main-link :href="route('dashboard')" :icon="'building-o'">
                     {{ __('Apartments') }}
                 </x-panel-main-link>

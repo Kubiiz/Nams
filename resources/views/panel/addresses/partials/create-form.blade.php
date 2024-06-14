@@ -5,22 +5,25 @@
         <h1 class="text-lg">{{ __('Create new address') }}</h1>
         <div>
             <x-alert :type="'info'">
-                {!! __('Count of addresses created by your company/companies:') !!}
-                <div class="my-2">
+                {!! __('Addresses created by your company:') !!}
+                <div class="mt-1">
                     @foreach ($companies as $company)
                         @php
-                            $color = $company->addresses->count() < $company->count ? 'green' : 'red';
+                            $color[$loop->index] =  $company->addresses->count() < $company->count ? 'text-green-600' : 'text-red-500';
 
                             if($company->count - $company->addresses->count() > 0) {
                                 $count[] = 1;
                             }
                         @endphp
 
-                        <div>{{ $company->name }} - <span class="text-{{ $color }}-500">{{ $company->addresses->count() }}</span>/{{ $company->count }}</div>
+                        <div>
+                            <strong>{{ $company->name }}</strong> - <span class="{{ $color[$loop->index] }}">{{ $company->addresses->count() }}</span>
+                            <span class="italic">{{ __('from') }} {{ $company->count }}</span>
+                        </div>
                     @endforeach
                 </div>
                 @if (count($count) == 0)
-                    {!! __('If you want to create more, please contact administrator!') !!}
+                    <div class="mt-3">{!! __('If you want to create more, please contact administrator!') !!}</div>
                 @endif
             </x-alert>
             @if (count($count) > 0)

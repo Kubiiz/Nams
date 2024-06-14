@@ -2,7 +2,7 @@
     <h1 class="text-lg py-4">{{ __('Delete address') }}</h1>
 
     <x-alert :type="'warning'">
-        {{ __("This address will be temporary deleted, but apartments will be visible to their owners.") }}
+        {{ __("This address will be deleted, but apartments will be visible to their owners.") }}
     </x-alert>
 
     <div class="pt-5">
@@ -30,7 +30,7 @@
             {{ __("Are you sure you want to delete this address?") }}
         </h2>
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("This address will be temporary deleted, but apartments will be visible to their owners.") }}
+            {{ __("This address will be deleted, but apartments will be visible to their owners.") }}
         </p>
         <div class="mt-6 flex justify-end">
             <x-secondary-button x-on:click="$dispatch('close')">

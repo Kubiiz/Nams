@@ -31,7 +31,7 @@ class CreateManagerRule implements ValidationRule
         }
 
         if (!auth()->user()->isAdmin() && $this->address->company->owner != auth()->user()->email) {
-            $fail(__('":company" company does not belong to You!', ['company' => $this->address->company->name]));
+            $fail(__('This company does not belong to You!'));
         }
     }
 }

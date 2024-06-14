@@ -48,25 +48,22 @@ Route::middleware('auth')->group(function () {
             Route::post('create', 'store')->name('store')->middleware('admin');
             Route::get('{company}/edit', 'edit')->name('edit');
             Route::patch('{company}', 'update')->name('update');
-            Route::post('{company}/status', 'status')->name('status')->middleware('admin');;
+            Route::post('{company}/status', 'status')->name('status')->middleware('admin');
         });
 
-        Route::prefix('addresses')->name('addresses.')->controller(PanelAddressController::class)->group(function () {
+        Route::middleware('owner')->prefix('addresses')->name('addresses.')->controller(PanelAddressController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('search', 'search')->name('search');
             Route::get('{address}/edit', 'edit')->name('edit');
             Route::post('{address}/status', 'status')->name('status')->middleware('admin');
-
-            Route::middleware('owner')->group(function () {
-                Route::get('create', 'create')->name('create');
-                Route::post('create', 'store')->name('store');
-                Route::patch('{address}', 'update')->name('update');
-                Route::patch('{address}/settings', 'settings')->name('settings');
-                Route::post('{address}/managers', 'managerCreate')->name('manager.create');
-                Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
-            });
+            Route::get('create', 'create')->name('create');
+            Route::post('create', 'store')->name('store');
+            Route::patch('{address}', 'update')->name('update');
+            Route::patch('{address}/settings', 'settings')->name('settings');
+            Route::post('{address}/managers', 'managerCreate')->name('manager.create');
+            Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
         });
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

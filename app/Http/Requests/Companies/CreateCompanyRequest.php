@@ -17,6 +17,7 @@ class CreateCompanyRequest extends FormRequest
         return [
             'name' => ['required', 'min:3', 'unique:companies,name'],
             'owner' => ['required', 'email', 'exists:users,email'],
+            'count' => ['required', 'numeric', 'min:1'],
         ];
     }
 }

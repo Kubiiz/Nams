@@ -12,14 +12,19 @@
     <h1 class="text-lg">{{ __('Create new company') }}</h1>
     <div>
         <x-input-label for="name" :value="__('Company Name')" />
-        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" />
+        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" required />
         <x-input-error class="mt-2" :messages="$errors->get('name')" />
     </div>
     <div>
         <x-input-label for="owner" :value="__('Owner Email')" />
         <small>{{ __('Company owner must be registered with this email.') }}</small>
-        <x-text-input id="owner" name="owner" type="email" class="mt-1 block w-full" :value="old('owner')" />
+        <x-text-input id="owner" name="owner" type="email" class="mt-1 block w-full" :value="old('owner')" required />
         <x-input-error class="mt-2" :messages="$errors->get('owner')" />
+    </div>
+    <div>
+        <x-input-label for="count" :value="__('How many addresses can create')" />
+        <x-text-input id="count" name="count" type="number" class="mt-1 block w-full" :value="old('count')" required />
+        <x-input-error class="mt-2" :messages="$errors->get('count')" />
     </div>
 
     <div class="flex items-center gap-4">

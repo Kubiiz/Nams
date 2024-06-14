@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\SearchRequest;
+use App\Http\Requests\UserUpdateRequest;
 
 class UserController extends Controller
 {
@@ -59,26 +60,13 @@ class UserController extends Controller
     /**
      * Update user
      */
-    public function update(User $user, Request $request)
+    public function update(User $user, UserUpdateRequest $request)
     {
-        $request->validate([
-            'name'      => ['required', 'string', 'min:3', 'max:15'],
-            'surname'   => ['required', 'string', 'min:3', 'max:100'],
-            'phone'     => ['phone:LV'],
-            'email'     => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-        ]);
-
         if ($request->verify) {
             $user->markEmailAsVerified();
         }
 
-        // if ($request->email != $user->email) {
-        //     $request->merge([
-        //         'email_verified_at' => null,
-        //     ])->toArray();
-        // }
-
-        $user->update($request->all());
+        $user->update($request->validated());
 
         return back()->with('status', 'information-updated');
     }

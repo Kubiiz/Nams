@@ -1,5 +1,5 @@
 <div class="overflow-hidden">
-<div class="bg-white shadow-sm sm:rounded-lg text-gray-900">
+<div class="bg-white shadow-sm sm:rounded-lg text-gray-900 lg:mr-3 mb-3">
     <div class="flex justify-end p-3">
         <form method="GET" action="{{ route('panel.addresses.search') }}" class="flex">
             @csrf
@@ -34,16 +34,12 @@
         @foreach ($result as $address)
         <tr class="border-b hover:bg-gray-50">
             <td class="p-2">
-                @if ($perm)
-                    <a href="{{ route('panel.companies.edit', $address->company->id) }}">{{ $address->company->name }}</a>
+                <a href="{{ route('panel.companies.edit', $address->company->id) }}">{{ $address->company->name }}</a>
 
-                    @if ($address->trashed() == 1)
-                        <x-label :type="'warning'">
-                            {{ __('Deactivated') }}
-                        </x-label>
-                    @endif
-                @else
-                    {{ $address->company->name }}
+                @if ($address->trashed() == 1)
+                    <x-label :type="'warning'">
+                        {{ __('Deactivated') }}
+                    </x-label>
                 @endif
             </td>
             <td class="p-2">{{ $address->address }}</td>

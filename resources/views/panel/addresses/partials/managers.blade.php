@@ -9,7 +9,7 @@
             <table class="w-full text-sm whitespace-nowrap">
                 <thead>
                     <tr class="font-bold border-b">
-                        <td class="p-2">{{ __('Manager') }}</td>
+                        <td class="p-2">{{ __('Name') }}</td>
                         <td class="p-2">{{ __('Email') }}</td>
                         <td class="p-2">&nbsp;</td>
                     </tr>
@@ -20,17 +20,17 @@
                 <td class="p-2">{{ $manager->name }} {{ $manager->surname }}</td>
                 <td class="p-2">{{ $manager->email }}</td>
                 <td class="p-2 float-end">
-                    <x-button :type="'warning'" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-delete_{{ $loop->index }}')">
+                    <x-button-small :type="'warning'" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-remove_{{ $loop->index }}')">
                         <i class="fa fa-times mr-0.5"></i> {{ __('Remove') }}
-                    </x-button>
-                    <x-modal name="confirm-delete_{{ $loop->index }}">
+                    </x-button-small>
+                    <x-modal name="confirm-remove_{{ $loop->index }}">
                         <form method="post" action="{{ route('panel.addresses.manager.destroy', $result->id) }}" class="p-6">
                             @csrf
                             @method('delete')
                             <input type="hidden" name="manager" value="{{ $manager->email }}">
 
                             <h2 class="text-lg font-medium text-gray-900">
-                                {{ __('Are you sure you want to remove ":manager" manager?', ['manager' => $manager->name . ' ' . $manager->surname]) }}
+                                {{ __('Are you sure you want to remove :manager from this address?', ['manager' => $manager->name . ' ' . $manager->surname]) }}
                             </h2>
                             <p class="mt-1 text-sm text-gray-600">
                                 {{ __('This manager will be removed from this address.') }}
@@ -39,8 +39,8 @@
                                 <x-secondary-button x-on:click="$dispatch('close')">
                                     <i class="fa fa-times text-base mr-1"></i> {{ __('Cancel') }}
                                 </x-secondary-button>
-                                <x-button :type="'danger'" class="ml-1">
-                                    <i class="fa fa-times text-base mr-1"></i> {{ __('Delete') }}
+                                <x-button :type="'warning'" class="ml-1">
+                                    <i class="fa fa-times text-base mr-1"></i> {{ __('Remove') }}
                                 </x-button>
                             </div>
                         </form>

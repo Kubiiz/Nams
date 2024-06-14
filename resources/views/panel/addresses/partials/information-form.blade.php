@@ -1,7 +1,7 @@
 <div class="p-3 space-y-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
     <h1 class="text-lg mt-4">{{ __('Address Information') }}</h1>
 
-    @if ($perm && !$result->trashed())
+    @if (!$result->trashed())
         <form method="post" action="{{ route('panel.addresses.update', $result->id) }}" class="space-y-6">
             @csrf
             @method('patch')
@@ -13,7 +13,7 @@
                     @if ($perm)
                         <a href="{{ route('panel.companies.edit', $result->company->id) }}">
                             <x-label :type="'warning'">
-                                <i class="fa fa-pencil mr-1"></i> {{ __('Edit company') }}
+                                <i class="fa fa-pencil mr-1"></i> {{ __('Edit') }}
                             </x-label>
                         </a>
                     @endif
@@ -46,11 +46,11 @@
         </form>
     @else
         <div>
-            <x-input-label for="owner" :value="__('Company Name')" />
+            <x-input-label :value="__('Company Name')" />
             <small>{{ $result->company->name }}</small>
         </div>
         <div>
-            <x-input-label for="owner" :value="__('Address')" />
+            <x-input-label :value="__('Address')" />
             <small>{{ $result->address }}</small>
         </div>
     @endif

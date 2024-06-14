@@ -9,9 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-6">
             <div class="grid sm:grid-cols-2 grid-flow-row gap-3">
                 @include('panel.addresses.partials.information-form')
-                @include('panel.addresses.partials.options')
 
-                @if($perm && !$result->trashed())
+                @if(!$result->trashed())
                     @include('panel.addresses.partials.managers')
                     @include('panel.addresses.partials.settings')
                 @endif

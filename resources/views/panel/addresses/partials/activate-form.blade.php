@@ -2,7 +2,7 @@
     <h1 class="text-lg py-4">{{ __('Restore address') }}</h1>
 
     <x-alert :type="'info'">
-        {{ __("This address will be restored in our system. All apartments also will added to thi address.") }}
+        {{ __("This address will be restored. All apartments also will added to this address.") }}
     </x-alert>
 
     <div class="pt-5">
@@ -30,7 +30,7 @@
             {{ __("Are you sure you want to restore this address?") }}
         </h2>
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("This address will be restored in our system. All apartments also will added to thi address.") }}
+            {{ __("This address will be restored. All apartments also will added to this address.") }}
         </p>
         <div class="mt-6 flex justify-end">
             <x-secondary-button x-on:click="$dispatch('close')">

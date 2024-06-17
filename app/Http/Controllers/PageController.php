@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\log;
 use App\Models\Address;
 use App\Models\Company;
 use App\Models\Apartment;

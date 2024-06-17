@@ -11,6 +11,7 @@ use App\Http\Controllers\Panel\PanelController;
 use App\Http\Controllers\Panel\UserController as PanelUserController;
 use App\Http\Controllers\Panel\CompanyController;
 use App\Http\Controllers\Panel\AddressController as PanelAddressController;
+use App\Http\Controllers\Panel\LogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('dashboard');
@@ -62,6 +63,11 @@ Route::middleware('auth')->group(function () {
             Route::patch('{address}/settings', 'settings')->name('settings');
             Route::post('{address}/managers', 'managerCreate')->name('manager.create');
             Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
+        });
+
+        Route::middleware('admin')->prefix('logs')->name('logs.')->controller(LogController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('search', 'search')->name('search');
         });
     });
 });

@@ -29,7 +29,7 @@ return new class extends Migration
 
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(Company::class);
+            $table->foreignIdFor(Company::class);
             $table->string('address')->nullable();
             $table->string('managers')->nullable();
             $table->longText('settings')->nullable();
@@ -39,7 +39,7 @@ return new class extends Migration
 
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(Address::class);
+            $table->foreignIdFor(Address::class);
             $table->integer('apartment');
             $table->integer('owner')->nullable();
             $table->softDeletes();

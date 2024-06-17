@@ -27,7 +27,7 @@ class AddressController extends Controller
         $search = null;
         $count = [];
 
-        $result = Address::with('company')->sortable();
+        $result = Address::with('company');
         $companies = Company::with('addresses')->select(['id', 'name', 'count']);
 
         if ($request) {
@@ -46,7 +46,7 @@ class AddressController extends Controller
             $result = $result->withTrashed();
         }
 
-        $result = $result->paginate(10);
+        $result = $result->sortable()->paginate(10);
 
         return view('panel.addresses.index', compact('result', 'companies', 'search', 'count'));
     }
@@ -73,15 +73,17 @@ class AddressController extends Controller
     public function store(CreateAddressRequest $request)
     {
         $settings = [
-            'counter'       => null,
-            'counter_from'  => null,
-            'counter_to'    => null,
+            'counter' => null,
+            'counter_from' => null,
+            'counter_to' => null,
         ];
 
-        Address::create($request->merge([
+        $address = Address::create($request->merge([
             'company_id' => $request->company,
             'settings' => json_encode($settings)
-            ])->toArray());
+        ])->toArray());
+
+        Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Created address ($address->address)");
 
         return back()->with('status', 'address-created')->withInput();
     }
@@ -110,7 +112,7 @@ class AddressController extends Controller
         $settings = json_decode($result->settings, true);
 
         if (!$isAdmin && !$perm) {
-           return back();
+            return back();
         }
 
         return view('panel.addresses.edit', compact('result', 'perm', 'isAdmin', 'managers', 'settings'));
@@ -126,6 +128,7 @@ class AddressController extends Controller
         }
 
         $address->update($request->except(['company_id']));
+        Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Updated address ($address->address)");
 
         return back()->with('status', 'address-updated');
     }
@@ -137,7 +140,9 @@ class AddressController extends Controller
 
         if ($address->trashed()) {
             $address->restore();
+            Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Restored address ($address->address)");
         } else {
+            Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Deleted address ($address->address)");
             $address->delete();
         }
 
@@ -150,14 +155,16 @@ class AddressController extends Controller
     public function settings(Address $address, UpdateSettingsRequest $request)
     {
         $settings = [
-            'counter'       => $request->counter,
-            'counter_from'  => $request->counter_from,
-            'counter_to'    => $request->counter_to,
+            'counter' => $request->counter,
+            'counter_from' => $request->counter_from,
+            'counter_to' => $request->counter_to,
         ];
 
         $address->update([
             'settings' => json_encode($settings),
         ]);
+
+        Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Changed address settings ($address->address)");
 
         return back()->with('status', 'settings-updated');
     }
@@ -170,6 +177,8 @@ class AddressController extends Controller
         $address->update([
             'managers' => $address->managers ? $address->managers . '|' . $request->email : $request->email,
         ]);
+
+        Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Added manager to address ($address->address)");
 
         return back()->with('status', 'manager-added');
     }
@@ -190,6 +199,8 @@ class AddressController extends Controller
         $address->update([
             'managers' => $managers,
         ]);
+
+        Auth::user()->createLog(route('panel.addresses.edit', $address->id), "Removed address manager ($address->address)");
 
         return back()->with('status', 'manager-removed')->withInput();
     }

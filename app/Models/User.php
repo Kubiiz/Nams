@@ -62,6 +62,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Apartment::class, 'owner');
     }
 
+    public function log()
+    {
+        return $this->hasMany(Log::class);
+    }
+
     public function isAdmin()
     {
         return $this->where('id', $this->id)->where('access', 1)->exists();
@@ -108,5 +113,16 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    // Create log
+    public function createLog($link, $note, $result = true)
+    {
+        $this->log()->create([
+            'link' => $link,
+            'note' => $note,
+            'ip_address' => request()->ip(),
+            'result' => $result,
+        ]);
     }
 }

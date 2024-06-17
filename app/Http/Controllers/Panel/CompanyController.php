@@ -73,6 +73,7 @@ class CompanyController extends Controller
     {
         $company = Company::create($request->validated());
 
+        Auth::user()->createLog(route('panel.companies.edit', $company->id), "Created company ($company->name)");
         //$owner = User::where('email', $company->owner)->first();
         //$owner->notify(new NewCompany($company, $owner));
 
@@ -109,6 +110,7 @@ class CompanyController extends Controller
         }
 
         $company->update($request->validated());
+        Auth::user()->createLog(route('panel.companies.edit', $company->id), "Updated company ($company->name)");
 
         return back()->with('status', 'information-updated');
     }
@@ -124,7 +126,9 @@ class CompanyController extends Controller
         if ($company->trashed()) {
             $company->restore();
             $address->restore();
+            Auth::user()->createLog(route('panel.companies.edit', $company->id), "Restored company ($company->name)");
         } else {
+            Auth::user()->createLog(route('panel.companies.edit', $company->id), "Deleted company ($company->name)");
             $company->delete();
             $address->delete();
         }

@@ -31,8 +31,7 @@ class UserController extends Controller
                     'name',
                     'surname',
                     'email',
-                ], 'LIKE', "%$search%")
-                ->sortable()->paginate(10);
+                ], 'LIKE', "%$search%");
         }
 
         return view('panel.users.index', compact('result', 'search'));
@@ -68,6 +67,8 @@ class UserController extends Controller
 
         $user->update($request->validated());
 
+        Auth::user()->createLog(route('panel.users.edit', $user->id), "Updated user ($user->name $user->surname)");
+
         return back()->with('status', 'information-updated');
     }
 
@@ -83,6 +84,8 @@ class UserController extends Controller
         ]);
 
         $user->notify(new NewPassword($password, $user->name));
+
+        Auth::user()->createLog(route('panel.user.edit', $user->id), "Changed users password ($user->name $user->surname)");
 
         return back()->with('status', 'password-updated');
     }

@@ -10,7 +10,7 @@
                 <x-panel-main-link :href="route('dashboard')" :icon="'bar-chart'">
                     {{ __('Statistics') }}
                 </x-panel-main-link>
-                <x-panel-main-link :href="route('dashboard')" :icon="'list'">
+                <x-panel-main-link :href="route('panel.logs.index')" :icon="'list'">
                     {{ __('Logs') }}
                 </x-panel-main-link>
             @endif

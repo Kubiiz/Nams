@@ -22,7 +22,7 @@ class UserController extends Controller
     public function index(SearchRequest $request = null)
     {
         $search = null;
-        $result = User::sortable()->paginate(10);
+        $result = User::query();
 
         if ($request) {
             $search = $request->input('search');
@@ -33,6 +33,8 @@ class UserController extends Controller
                     'email',
                 ], 'LIKE', "%$search%");
         }
+
+        $result = $result->sortable()->paginate(10);
 
         return view('panel.users.index', compact('result', 'search'));
     }

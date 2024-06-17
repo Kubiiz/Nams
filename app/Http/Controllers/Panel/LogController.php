@@ -17,7 +17,7 @@ class LogController extends Controller
     public function index(SearchRequest $request = null)
     {
         $search = null;
-        $result = Log::with('user')->sortable()->paginate(10);
+        $result = Log::with('user');
 
         if ($request) {
             $search = $request->input('search');
@@ -28,6 +28,16 @@ class LogController extends Controller
             ], 'LIKE', "%$search%");
         }
 
+        $result = $result->sortable()->paginate(10);
+
         return view('panel.logs.index', compact('result', 'search'));
+    }
+
+    /**
+     * Search logs
+     */
+    public function search(SearchRequest $request)
+    {
+        return $this->index($request);
     }
 }

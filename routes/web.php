@@ -11,6 +11,7 @@ use App\Http\Controllers\Panel\PanelController;
 use App\Http\Controllers\Panel\UserController as PanelUserController;
 use App\Http\Controllers\Panel\CompanyController;
 use App\Http\Controllers\Panel\AddressController as PanelAddressController;
+use App\Http\Controllers\Panel\ApartmentController as PanelApartmentController;
 use App\Http\Controllers\Panel\LogController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,9 +61,19 @@ Route::middleware('auth')->group(function () {
             Route::get('create', 'create')->name('create');
             Route::post('create', 'store')->name('store');
             Route::patch('{address}', 'update')->name('update');
+            Route::get('{address}/apartment', 'createApartment')->name('apartment.create');
             Route::patch('{address}/settings', 'settings')->name('settings');
             Route::post('{address}/managers', 'managerCreate')->name('manager.create');
             Route::delete('{address}/managers', 'managerDestroy')->name('manager.destroy');
+        });
+
+        Route::prefix('apartments')->name('apartments.')->controller(PanelApartmentController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('create/{address}', 'store')->name('store');
+            Route::get('search', 'search')->name('search');
+            Route::get('{apartment}/edit', 'edit')->name('edit');
+            Route::post('{apartment}/status', 'status')->name('status');
+            Route::patch('{address}', 'update')->name('update');
         });
 
         Route::middleware('admin')->prefix('logs')->name('logs.')->controller(LogController::class)->group(function () {

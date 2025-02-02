@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Panel\ApartmentController;
 use App\Models\User;
 use App\Models\Apartment;
 use App\Models\Company;
@@ -13,47 +12,43 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\SearchRequest;
-use App\Http\Requests\Addresses\CreateAddressRequest;
-use App\Http\Requests\Addresses\UpdateAddressRequest;
-use App\Http\Requests\Addresses\CreateManagerRequest;
-use App\Http\Requests\Addresses\UpdateSettingsRequest;
+use App\Http\Requests\Apartments\CreateApartmentRequest;
 
-class AddressController extends Controller
+class ApartmentController extends Controller
 {
     /**
-     * Show addresses
+     * Show apartments
      */
     public function index(SearchRequest $request = null)
     {
         $search = null;
-        $count = [];
 
-        $result = Address::with('company');
-        $companies = Company::with('addresses')->select(['id', 'name', 'count']);
+        $result = Apartment::with('addresses');
 
         if ($request) {
             $search = $request->input('search');
 
-            $result = Address::with('company')->where('address', 'LIKE', "%$search%")->sortable();
+            $result = $result->where('address', 'LIKE', "%$search%")->sortable();
         }
 
         if (!Auth::user()->isAdmin()) {
             $email = Auth::user()->email;
 
-            $companies = $companies->where('owner', $email)->get();
-            $result = $result->whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
+            $companies = Company::with('addresses')->where('owner', $email)->get();
+            $addresses = Address::whereIn('company_id', $companies->select('id'))->orWhere('managers', 'LIKE', "%$email%");
+
+            $result = $result->whereIn('address_id', $addresses->select('id'));
         } else {
-            $companies = $companies->get();
             $result = $result->withTrashed();
         }
 
         $result = $result->sortable()->paginate(10);
 
-        return view('panel.addresses.index', compact('result', 'companies', 'search', 'count'));
+        return view('panel.apartments.index', compact('result', 'search'));
     }
 
     /**
-     * Search addresses
+     * Search apartments
      */
     public function search(SearchRequest $request)
     {
@@ -61,9 +56,9 @@ class AddressController extends Controller
     }
 
     /**
-     * Store addresses
+     * Store apartments
      */
-    public function store(CreateAddressRequest $request)
+    public function store(CreateApartmentRequest $request)
     {
         $settings = [
             'counter' => null,
@@ -140,14 +135,6 @@ class AddressController extends Controller
         }
 
         return back()->with('status', 'address-status');
-    }
-
-    /**
-     * Create apartments
-     */
-    public function createApartment(Address $address)
-    {
-        return view('panel.addresses.create-apartment', compact('address'));
     }
 
     /**

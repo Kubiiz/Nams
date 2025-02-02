@@ -25,7 +25,7 @@
                 </x-panel-main-link>
                 @endif
 
-                <x-panel-main-link :href="route('dashboard')" :icon="'building-o'">
+                <x-panel-main-link :href="route('panel.apartments.index')" :icon="'building-o'">
                     {{ __('Apartments') }}
                 </x-panel-main-link>
                 <x-panel-main-link :href="route('dashboard')" :icon="'tint'">
